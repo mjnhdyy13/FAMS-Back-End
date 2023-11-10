@@ -1,0 +1,27 @@
+spring:
+  config:
+    import: config.yml
+  datasource:
+    url: jdbc:mysql://${my_mysql_db_config.host}:${my_mysql_db_config.port}/${my_mysql_db_config.schema}
+    username: ${my_mysql_db_config.username}
+    password: ${my_mysql_db_config.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    database: mysql
+  mail:
+    host: smtp.gmail.com
+    username: toandungpqkg@gmail.com
+    password: auyu pnjg pafv hjbi
+    port: 587
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
