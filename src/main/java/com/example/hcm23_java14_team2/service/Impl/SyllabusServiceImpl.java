@@ -70,14 +70,16 @@ public class SyllabusServiceImpl implements SyllabusService {
     }
 
     @Override
-    public List<SyllabusResponse> getAllSyllabus(String search) {
+    public ApiResponse<List<SyllabusResponse>> getAllSyllabus(String search) {
         List<SyllabusResponse> syllabusResponseList = syllabusMapper.toResponselist(syllabusRepository.searchByName(search));
         for(SyllabusResponse syllabusResponse : syllabusResponseList){
             List<OutputStandard> outputStandardList = outputStandardRepository.findOutputStandardBySyllabusId(syllabusResponse.getId());
             List<OutputStandardResponse> outputStandardResponses = outputStandardMapper.toResponseList(outputStandardList);
             syllabusResponse.setOutputStandardList(outputStandardResponses);
         }
-        return syllabusResponseList;
+        ApiResponse<List<SyllabusResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.ok(syllabusResponseList);
+        return apiResponse;
     }
 
 
