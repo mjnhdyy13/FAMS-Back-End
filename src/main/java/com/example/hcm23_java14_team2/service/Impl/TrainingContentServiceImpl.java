@@ -105,6 +105,10 @@ public class TrainingContentServiceImpl implements TrainingContentService {
                     .message("Update failed!")
                     .build();
         }
+        return ApiResponse.builder()
+                .statusCode("401")
+                .message("Content is not existed!")
+                .build();
     }
 
 }
