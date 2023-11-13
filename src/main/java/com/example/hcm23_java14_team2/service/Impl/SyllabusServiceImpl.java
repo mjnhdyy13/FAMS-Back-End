@@ -7,10 +7,9 @@ import com.example.hcm23_java14_team2.model.entities.Enum.Level;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusSyllabus;
 import com.example.hcm23_java14_team2.model.entities.OutputStandard;
 import com.example.hcm23_java14_team2.model.entities.Syllabus;
-import com.example.hcm23_java14_team2.model.entities.TrainingProgram;
 import com.example.hcm23_java14_team2.model.mapper.OutputStandardMapper;
 import com.example.hcm23_java14_team2.model.mapper.SyllabusMapper;
-import com.example.hcm23_java14_team2.model.request.SyllabusRequest;
+import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
 import com.example.hcm23_java14_team2.model.response.*;
 
 import com.example.hcm23_java14_team2.repository.OutputStandardRepository;

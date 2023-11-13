@@ -1,7 +1,5 @@
 package com.example.hcm23_java14_team2.controller;
 
-import com.example.hcm23_java14_team2.model.request.TrainingUnit.DeleteDayInUnitDayRequest;
-import com.example.hcm23_java14_team2.model.request.TrainingUnit.FetchUnitBySyllabus;
 import com.example.hcm23_java14_team2.model.request.TrainingUnit.TrainingUnitRequest;
 import com.example.hcm23_java14_team2.model.request.TrainingUnit.UpdateUnitNameRequest;
 import com.example.hcm23_java14_team2.service.TrainingUnitService;
@@ -38,10 +36,6 @@ public class TrainingUnitController {
         return new ResponseEntity<>(trainingUnitService.deleteUnit(unit_id),HttpStatus.OK);
     }
     @DeleteMapping("/delete-day")
-<<<<<<< HEAD
-    public ResponseEntity<?> deleteDay(@RequestBody DeleteDayInUnitDayRequest request) {
-        return new ResponseEntity<>(trainingUnitService.deleteDay(request.getId(), request.getDay()),HttpStatus.OK);
-=======
     public ResponseEntity<?> deleteDay(@RequestParam(value = "id",defaultValue = "") Long id,
                                        @RequestParam(value = "day",defaultValue = "") Integer day) {
         return new ResponseEntity<>(trainingUnitService.deleteDay(id, day),HttpStatus.OK);
@@ -49,6 +43,5 @@ public class TrainingUnitController {
     @GetMapping("/fetch-unit")
     public ResponseEntity<?> fetchUnit(@RequestParam(value = "unit_id",defaultValue = "") Long unit_id) {
         return new ResponseEntity<>(trainingUnitService.fetch1Unit(unit_id),HttpStatus.OK);
->>>>>>> bd0b7a8f0529bf15d8e1f2e1baeec0d956d94ef7
     }
 }

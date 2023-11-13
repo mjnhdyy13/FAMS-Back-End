@@ -5,10 +5,7 @@ import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
 import com.example.hcm23_java14_team2.model.response.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.OutputStandardResponse;
 import com.example.hcm23_java14_team2.model.response.SyllabusResponse;
-import com.example.hcm23_java14_team2.repository.OutputStandardRepository;
-import com.example.hcm23_java14_team2.repository.SyllabusRepository;
 import com.example.hcm23_java14_team2.service.SyllabusService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -41,13 +38,6 @@ public class SyllabusController {
     }
 
     @GetMapping("/list")
-<<<<<<< HEAD
-    public ResponseEntity<?> getAllSyllabus(){
-        try {
-            ApiResponse<List<SyllabusResponse>> apiResponse = new ApiResponse<>();
-            apiResponse.ok(syllabusService.getAllSyllabus());
-            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-=======
     public ResponseEntity<?> getAllSyllabus(@RequestParam(value = "search",defaultValue = "") String search,
                                         @RequestParam(value = "page",required = false) Integer  page,
                                         @RequestParam(value = "size",defaultValue = "2") Integer  size) {
@@ -55,7 +45,6 @@ public class SyllabusController {
             if(page!= null)
                 return new ResponseEntity<>(syllabusService.getAllSyllabusWithPage(search,page,size),HttpStatus.OK);
             return new ResponseEntity<>(syllabusService.getAllSyllabus(search),HttpStatus.OK);
->>>>>>> bd0b7a8f0529bf15d8e1f2e1baeec0d956d94ef7
         }catch (Exception e){
             throw new ApplicationException();
         }
