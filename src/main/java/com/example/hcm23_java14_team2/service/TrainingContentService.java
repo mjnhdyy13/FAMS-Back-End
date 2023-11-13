@@ -12,6 +12,6 @@ public interface TrainingContentService {
     TrainingContentResponse getById(Long id);
     TrainingContentResponse insertTrainingContent(TrainingContentRequest trainingContentRequest);
     //TrainingContentResponse updateTrainingContent(Long id, TrainingContentRequest trainingContentRequest);
-    TrainingContentResponse deleteTrainingContent(Long id);
+    ApiResponse<Object> deleteTrainingContent(Long id);
     ApiResponse<Object> updateTrainingContent(Long id,TrainingContentRequest request);
 }

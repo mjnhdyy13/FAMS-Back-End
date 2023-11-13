@@ -77,9 +77,26 @@ public class TrainingContentServiceImpl implements TrainingContentService {
     }
 
     @Override
-    public TrainingContentResponse deleteTrainingContent(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteTrainingContent'");
+    public ApiResponse<Object> deleteTrainingContent(Long id) {
+        try {
+            var trainingContent = trainingContentRepository.findById(id);
+            if(trainingContent.isPresent()){
+                trainingContentRepository.deleteById(id);
+                return ApiResponse.builder()
+                        .statusCode("200")
+                        .message("Delete successfully!")
+                        .build();
+            }
+        } catch (Exception e) {
+            return ApiResponse.builder()
+                    .statusCode("401")
+                    .message("Delete failed!")
+                    .build();
+        }
+        return ApiResponse.builder()
+                .statusCode("401")
+                .message("Delete failed!")
+                .build();
     }
 
     @Override
