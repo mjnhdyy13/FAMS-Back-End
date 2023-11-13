@@ -31,7 +31,7 @@ public class UserPermission  {
 
     @Column(name = "training_program")
     @Enumerated(EnumType.STRING)
-    private Permission trainingProgram;
+    private Permission trainingProgram; //(trainingProgram.FULL_ACCESS)
 
     @Column(name = "class_room")
     @Enumerated(EnumType.STRING)
