@@ -17,5 +17,6 @@ public class InsertTrainingProgramRequest {
     private Integer duration;
     private StatusTrainingProgram status;
 
+    private Long userId;
     private List<Long> syllabusListId;
 }
