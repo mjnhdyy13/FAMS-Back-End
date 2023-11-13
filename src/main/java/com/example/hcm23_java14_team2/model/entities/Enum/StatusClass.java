@@ -4,6 +4,6 @@ public enum StatusClass {
     PLANNING,
     OPENING,
     CLOSED,
-    SCHEDULED,
-    DEACTIVE
+    DEACTIVE,
+    SCHEDULED
 }

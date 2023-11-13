@@ -12,9 +12,6 @@ import java.util.List;
 
 @Repository
 public interface SyllabusRepository extends JpaRepository<Syllabus,Long> {
-    @Query(value = "select  s from Syllabus s where s.isDeleted = false ")
-    List<Syllabus> findAll();
-
     @Query("select s from Syllabus s where s.topicName like %?1%")
     Page<Syllabus> searchByNameWithPage(String name, Pageable pageable);
 

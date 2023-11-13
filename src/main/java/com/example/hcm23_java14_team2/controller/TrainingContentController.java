@@ -3,26 +3,21 @@ package com.example.hcm23_java14_team2.controller;
 import java.util.List;
 
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
+import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
-import com.example.hcm23_java14_team2.model.request.TrainingContentRequest;
 import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.TrainingContentResponse;
 import com.example.hcm23_java14_team2.service.TrainingContentService;
 
 import jakarta.validation.ValidationException;
-
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -44,7 +39,7 @@ public class TrainingContentController {
         }
     }
 
-    @PostMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id){
         ApiResponse<TrainingContentResponse> response = new ApiResponse<TrainingContentResponse>();
         try {
@@ -72,5 +67,14 @@ public class TrainingContentController {
         }catch (Exception e){
             throw new ApplicationException(e.getMessage());
         }
+    }
+    @PatchMapping("/update")
+    public ResponseEntity<?> updateTrainingContent(@RequestParam(value = "id",defaultValue = "") Long id,
+                                                   @RequestBody TrainingContentRequest request) {
+        return new ResponseEntity<>(trainingContentService.updateTrainingContent(id,request),HttpStatus.OK);
+    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteTrainingContent(@RequestParam(value = "id",defaultValue = "") Long id) {
+        return new ResponseEntity<>(trainingContentService.deleteTrainingContent(id),HttpStatus.OK);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.example.hcm23_java14_team2.model.entities.User;
-import com.example.hcm23_java14_team2.model.request.TrainingContentRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentRequest;
 import com.example.hcm23_java14_team2.repository.UserRepository;
 
 

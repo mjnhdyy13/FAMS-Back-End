@@ -1,4 +1,4 @@
-package com.example.hcm23_java14_team2.model.request;
+package com.example.hcm23_java14_team2.model.request.Syllabus;
 
 import com.example.hcm23_java14_team2.model.entities.Enum.Level;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusSyllabus;

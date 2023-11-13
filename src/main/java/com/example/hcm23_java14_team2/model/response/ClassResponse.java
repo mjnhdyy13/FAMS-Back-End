@@ -27,4 +27,6 @@ public class ClassResponse {
     private String modifiedBy;
     private String modifiedDate;
     private Integer TrainingProgramId;
+
+
 }
