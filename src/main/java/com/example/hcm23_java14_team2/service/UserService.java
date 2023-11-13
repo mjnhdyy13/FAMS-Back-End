@@ -1,8 +1,8 @@
 package com.example.hcm23_java14_team2.service;
 
 import com.example.hcm23_java14_team2.model.entities.User;
-import com.example.hcm23_java14_team2.model.request.AddUserRequest;
-import com.example.hcm23_java14_team2.model.request.UserRequest;
+import com.example.hcm23_java14_team2.model.request.User.AddUserRequest;
+import com.example.hcm23_java14_team2.model.request.User.UserRequest;
 import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.PageResponse;
 import com.example.hcm23_java14_team2.model.response.UserResponse;

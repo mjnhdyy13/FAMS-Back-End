@@ -1,7 +1,7 @@
 package com.example.hcm23_java14_team2.validator;
 
 import com.example.hcm23_java14_team2.model.entities.UserPermission;
-import com.example.hcm23_java14_team2.model.request.UserRequest;
+import com.example.hcm23_java14_team2.model.request.User.UserRequest;
 import com.example.hcm23_java14_team2.repository.UserPermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,9 +1,7 @@
 package com.example.hcm23_java14_team2.controller;
 
-import com.example.hcm23_java14_team2.model.request.DeleteDayInUnitRq;
-import com.example.hcm23_java14_team2.model.request.FetchUnitBySyllabus;
-import com.example.hcm23_java14_team2.model.request.TrainingUnitRequest;
-import com.example.hcm23_java14_team2.model.request.UpdateUnitName;
+import com.example.hcm23_java14_team2.model.request.TrainingUnit.TrainingUnitRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingUnit.UpdateUnitNameRequest;
 import com.example.hcm23_java14_team2.service.TrainingUnitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,7 +28,7 @@ public class TrainingUnitController {
     }
 
     @PutMapping("/update/unit-name")
-    public ResponseEntity<?> updateUnitName(@RequestBody UpdateUnitName request) {
+    public ResponseEntity<?> updateUnitName(@RequestBody UpdateUnitNameRequest request) {
         return new ResponseEntity<>(trainingUnitService.updateUnitName(request.getUnit_id(),request.getName()),HttpStatus.OK);
     }
     @DeleteMapping("/delete")
@@ -38,7 +36,12 @@ public class TrainingUnitController {
         return new ResponseEntity<>(trainingUnitService.deleteUnit(unit_id),HttpStatus.OK);
     }
     @DeleteMapping("/delete-day")
-    public ResponseEntity<?> deleteDay(@RequestBody DeleteDayInUnitRq request) {
-        return new ResponseEntity<>(trainingUnitService.deleteDay(request.getId(), request.getDay()),HttpStatus.OK);
+    public ResponseEntity<?> deleteDay(@RequestParam(value = "id",defaultValue = "") Long id,
+                                       @RequestParam(value = "day",defaultValue = "") Integer day) {
+        return new ResponseEntity<>(trainingUnitService.deleteDay(id, day),HttpStatus.OK);
+    }
+    @GetMapping("/fetch-unit")
+    public ResponseEntity<?> fetchUnit(@RequestParam(value = "unit_id",defaultValue = "") Long unit_id) {
+        return new ResponseEntity<>(trainingUnitService.fetch1Unit(unit_id),HttpStatus.OK);
     }
 }

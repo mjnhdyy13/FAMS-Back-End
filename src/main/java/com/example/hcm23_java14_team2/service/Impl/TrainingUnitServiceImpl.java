@@ -5,7 +5,7 @@ import com.example.hcm23_java14_team2.model.entities.DaySyllabus;
 import com.example.hcm23_java14_team2.model.entities.Syllabus;
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
 import com.example.hcm23_java14_team2.model.entities.TrainingUnit;
-import com.example.hcm23_java14_team2.model.request.TrainingUnitRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingUnit.TrainingUnitRequest;
 import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.DayResponse;
 import com.example.hcm23_java14_team2.repository.DaySyllabusRepository;
@@ -185,6 +185,23 @@ public class TrainingUnitServiceImpl implements TrainingUnitService {
                     .build();
         }
 
+    }
+
+    @Override
+    public ApiResponse<Object> fetch1Unit(Long id) {
+        try {
+            var data = trainingUnitRepository.findById(id);
+            return ApiResponse.builder()
+                    .statusCode("200")
+                    .data(data)
+                    .message("Successfully!")
+                    .build();
+        } catch (Exception e){
+            return ApiResponse.builder()
+                    .statusCode("400")
+                    .message("Failed!")
+                    .build();
+        }
     }
 
     public boolean checkExist(Long day_id, Integer num) {

@@ -2,8 +2,10 @@ package com.example.hcm23_java14_team2.controller;
 
 import java.util.List;
 
-import com.example.hcm23_java14_team2.model.request.SyllabusRequest;
-import com.example.hcm23_java14_team2.model.request.TrainingProgramRequest;
+import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingProgram.InsertTrainingProgramRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingProgram.UpdateTrainingProgramRequest;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -76,7 +78,7 @@ public class TrainingProgramController {
         }
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateTrainingProgram(@PathVariable Integer id, @Valid @RequestBody TrainingProgramRequest trainingProgramRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> updateTrainingProgram(@PathVariable Integer id, @Valid @RequestBody UpdateTrainingProgramRequest trainingProgramRequest, BindingResult bindingResult) {
         try {
             TrainingProgramResponse trainingProgramResponse = trainingProgramService.updateTrainingProgram(id,trainingProgramRequest, bindingResult);
             ApiResponse<TrainingProgramResponse> apiResponse = new ApiResponse<TrainingProgramResponse>();
@@ -91,7 +93,7 @@ public class TrainingProgramController {
         }
     }
     @PostMapping("/add")
-    public ResponseEntity<?> insertTraingProgram(@RequestBody TrainingProgramRequest request) {
+    public ResponseEntity<?> insertTraingProgram(@RequestBody InsertTrainingProgramRequest request) {
         try {
             return new ResponseEntity<>(trainingProgramService.insertTrainingProgram(request), HttpStatus.OK);
         } catch (NotFoundException ex) {

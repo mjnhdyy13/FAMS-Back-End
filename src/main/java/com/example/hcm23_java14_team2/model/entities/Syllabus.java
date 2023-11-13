@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name = "syllabus")
-public class Syllabus {
+public class Syllabus extends BaseEntity{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,9 +52,6 @@ public class Syllabus {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private StatusSyllabus status;
-
-    @Column(columnDefinition = "boolean default false")
-    private  Boolean isDeleted;
 
     @OneToMany(mappedBy = "syllabus", cascade = CascadeType.ALL)
     @JsonIgnore

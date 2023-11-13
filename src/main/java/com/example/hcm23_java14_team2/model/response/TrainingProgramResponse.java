@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.example.hcm23_java14_team2.model.entities.Class;
+import com.example.hcm23_java14_team2.model.entities.Syllabus;
 import com.example.hcm23_java14_team2.model.entities.Training_Syllabus;
 
 @Getter
@@ -18,12 +19,14 @@ import com.example.hcm23_java14_team2.model.entities.Training_Syllabus;
 @Builder
 public class TrainingProgramResponse {
     private Integer id;
-    private String code;
-    private String startTime;
     private String name;
+    private String code;
     private Integer duration;
+    private String startTime;
     private StatusTrainingProgram status;
 
     private String userNameCreate;
     private Long userId;
+
+    private List<Syllabus> syllabusList;
 }
