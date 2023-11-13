@@ -1,5 +1,4 @@
 package com.example.hcm23_java14_team2.service.Impl;
-
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.model.entities.*;
 import com.example.hcm23_java14_team2.model.entities.Class;
@@ -8,18 +7,25 @@ import com.example.hcm23_java14_team2.model.request.ClassRequest;
 import com.example.hcm23_java14_team2.model.response.ClassDetailResponse;
 import com.example.hcm23_java14_team2.model.response.SyllabusViewClassResponse;
 import com.example.hcm23_java14_team2.model.response.TrainingProgramViewClassResponse;
+import com.example.hcm23_java14_team2.exception.ApplicationException;
+import com.example.hcm23_java14_team2.exception.NotFoundException;
+import com.example.hcm23_java14_team2.exception.ValidationException;
+import com.example.hcm23_java14_team2.model.entities.Class;
+import com.example.hcm23_java14_team2.model.entities.Enum.StatusClass;
+import com.example.hcm23_java14_team2.model.mapper.ClassMapper;
+import com.example.hcm23_java14_team2.model.response.ClassResponse;
 import com.example.hcm23_java14_team2.repository.ClassRepository;
 import com.example.hcm23_java14_team2.service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 public class ClassServiceImpl implements ClassService {
     @Autowired
     private ClassRepository classRepository;
+    @Autowired
+    private ClassMapper classMapper;
     public ClassServiceImpl(ClassRepository classRepository) {
         this.classRepository = classRepository;
     }
@@ -104,5 +110,27 @@ public class ClassServiceImpl implements ClassService {
         syllabusViewClassResponse.setCreateDate(String.valueOf(syllabus.getCreateDate()));
         // set other fields from syllabus to syllabusDTO
         return syllabusViewClassResponse;
+    }
+
+    @Override
+    public ClassResponse deleteByIdClass(Long id) {
+        try {
+            Class Class = classRepository.findById(id).orElse(null);
+            if (Class == null) {
+                throw new NotFoundException("Class Not Found");
+            }
+            // Update
+            if (Class.getStatus() == StatusClass.PLANNING || Class.getStatus() == StatusClass.SCHEDULED )
+            {
+                Class.setStatus(StatusClass.DEACTIVE);
+                classRepository.saveAndFlush(Class);
+                return classMapper.toResponse(Class);
+            }else {
+                throw new ValidationException("Class In Running");
+            }
+
+        } catch (ApplicationException ex) {
+            throw ex;
+        }
     }
 }

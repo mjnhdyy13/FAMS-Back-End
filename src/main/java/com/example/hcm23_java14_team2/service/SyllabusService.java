@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface SyllabusService {
     PageResponse<List<SyllabusResponse>> getAllSyllabusWithPage(String search, Integer page, Integer size);
-    List<SyllabusResponse> getAllSyllabus(String search);
+    ApiResponse<List<SyllabusResponse>> getAllSyllabus(String search);
     SyllabusResponse findById(Long id);
     Syllabus findByID(Long id);
     SyllabusResponse updateSyllabus(Long id,SyllabusRequest syllabusRequest, BindingResult bindingResult);

@@ -14,6 +14,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.example.hcm23_java14_team2.exception.ValidationException;
+import com.example.hcm23_java14_team2.model.response.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.ClassResponse;
+import com.example.hcm23_java14_team2.service.ClassService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/class")
@@ -38,11 +48,23 @@ public class ClassController {
             throw new ApplicationException(); // Handle other exceptions
         }
     }
+    @DeleteMapping(value = {"delete/{id}"})
+    public ResponseEntity<?> deleteTraining(@PathVariable Long id) {
+        try {
+            // Delete
+            ClassResponse classResponse = classService.deleteByIdClass(id);
+            ApiResponse<ClassResponse> apiResponse = new ApiResponse<ClassResponse>();
+            apiResponse.ok(classResponse);
+            return ResponseEntity.ok(apiResponse);
+        } catch (NotFoundException ex) {
+            throw ex; // Rethrow NotFoundException
+        } catch (ValidationException ex) {
+            throw ex; // Rethrow ValidationException
+        }
+    }
     @PostMapping("/search_by_calendar")
     public ResponseEntity<?> findClassesByCalendar(@RequestBody ClassRequest request) {
         try{
-//            List<Class> classes = classService.findClasses(request);
-//            return ResponseEntity.ok(classes);
             ApiResponse<List<Class>> apiResponse = new ApiResponse();
             apiResponse.ok(classService.findClasses(request));
             return new ResponseEntity<>(apiResponse, HttpStatus.OK);
@@ -52,12 +74,10 @@ public class ClassController {
             throw new ApplicationException(); // Handle other exceptions
         }
     }
-
     @GetMapping("/classes/{id}")
-    public ResponseEntity<?> getClassDetails(@PathVariable Long id) {
+    public ResponseEntity<?> getClassDetails(@PathVariable Long id)
+    {
         try{
-//            ClassDetailResponse classDetailResponse = classService.getClassDetails(id);
-//            return ResponseEntity.ok(classDetailResponse);
             ApiResponse<ClassDetailResponse> apiResponse = new ApiResponse();
             apiResponse.ok(classService.getClassDetails(id));
             return new ResponseEntity<>(apiResponse, HttpStatus.OK);

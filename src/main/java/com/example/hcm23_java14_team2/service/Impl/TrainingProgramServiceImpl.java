@@ -74,7 +74,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     }
 
     @Override
-    public List<TrainingProgramResponse> getAllTrainingPrograms(String search) {
+    public ApiResponse<List<TrainingProgramResponse>> getAllTrainingPrograms(String search) {
         List<TrainingProgram> trainingPrograms = trainingProgramRepository.searchByName(search);
         List<TrainingProgramResponse> trainingProgramResponses = new ArrayList<>();
 
@@ -83,7 +83,9 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
             trainingProgramResponse.setUserNameCreate(item.getUser().getName());
             trainingProgramResponses.add(trainingProgramResponse);
         }
-        return trainingProgramResponses;
+        ApiResponse<List<TrainingProgramResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.ok(trainingProgramResponses);
+        return apiResponse;
     }
     
     @Override
