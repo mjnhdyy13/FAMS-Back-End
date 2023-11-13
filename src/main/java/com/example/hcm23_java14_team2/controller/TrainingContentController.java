@@ -72,7 +72,7 @@ public class TrainingContentController {
                                                    @RequestBody TrainingContentRequest request) {
         return new ResponseEntity<>(trainingContentService.updateTrainingContent(id,request),HttpStatus.OK);
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
     public ResponseEntity<?> deleteTrainingContent(@RequestParam(value = "id",defaultValue = "") Long id) {
         return new ResponseEntity<>(trainingContentService.deleteTrainingContent(id),HttpStatus.OK);
     }
