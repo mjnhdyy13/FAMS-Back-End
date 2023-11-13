@@ -1,5 +1,6 @@
 package com.example.hcm23_java14_team2.service.Impl;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,6 +51,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Autowired
     private SyllabusRepository syllabusRepository;
 
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     public PageResponse<List<TrainingProgramResponse>> getAllTrainingProgramsWithPage(String search, Integer page, Integer size){
@@ -59,15 +61,22 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
         for(TrainingProgram item : PageTraining){
             var trainingProgramResponse = trainingProgramMapper.toResponse(item);
+            //check if some properties is null then skip
             if (item.getUser() != null){
-                trainingProgramResponse.setUserNameCreate(item.getUser().getName());
+                trainingProgramResponse.setCreateBy(item.getUser().getName());
             }
+            if (item.getCreateDate() != null){
+                 trainingProgramResponse.setCreateOn(formatter.format(item.getCreateDate()));
+            }
+
             // get syllabus list for each training program
             List<Syllabus> syllabusList = new ArrayList<>();
             for (Training_Syllabus ts : item.getTraining_syllabusList()){
                 syllabusList.add(ts.getSyllabus());
             }
             trainingProgramResponse.setSyllabusList(syllabusList);
+            
+           
             // trainingProgramResponse.setUserNameCreate(item.getUser().getName());
             trainingProgramResponses.add(trainingProgramResponse);
         }
@@ -84,11 +93,22 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Override
     public TrainingProgramResponse findById(Integer id) {
         TrainingProgram trainingProgram = trainingProgramRepository.findById(id).orElse(null);
+
         if (trainingProgram == null){
             return null;
         }
         TrainingProgramResponse trainingProgramResponse = trainingProgramMapper.toResponse(trainingProgram);
-        trainingProgramResponse.setUserNameCreate(trainingProgram.getUser().getName());
+        if (trainingProgram.getUser() != null){
+                trainingProgramResponse.setCreateBy(trainingProgram.getUser().getName());
+        }
+        if (trainingProgram.getCreateDate() != null){
+                 trainingProgramResponse.setCreateOn(formatter.format(trainingProgram.getCreateDate()));
+        }
+        List<Syllabus> syllabusList = new ArrayList<>();
+        for (Training_Syllabus item: trainingProgram.getTraining_syllabusList()){
+            syllabusList.add(item.getSyllabus());
+        }
+        trainingProgramResponse.setSyllabusList(syllabusList);
         return trainingProgramResponse;
     }
 
@@ -97,10 +117,14 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         List<TrainingProgram> trainingPrograms = trainingProgramRepository.searchByName(search);
         List<TrainingProgramResponse> trainingProgramResponses = new ArrayList<>();
 
+        
+        //set base properties
         for (TrainingProgram item : trainingPrograms){
             var trainingProgramResponse = trainingProgramMapper.toResponse(item);
-            trainingProgramResponse.setUserNameCreate(item.getUser().getName());
+            trainingProgramResponse.setCreateBy(item.getUser().getName());
+            trainingProgramResponse.setCreateOn(formatter.format(item.getCreateDate()));
             trainingProgramResponses.add(trainingProgramResponse);
+
         }
         ApiResponse<List<TrainingProgramResponse>> apiResponse = new ApiResponse<>();
         apiResponse.ok(trainingProgramResponses);
@@ -172,16 +196,21 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         try{
             List<Training_Syllabus> listTraining_Syllabus = new ArrayList<>();
 
+            User userCreate = userRepository.findById(trainingProgramRequest.getUserId()).orElse(null);
             TrainingProgram trainingProgram = TrainingProgram.builder()
                 .name(trainingProgramRequest.getName())
                 .status(StatusTrainingProgram.DRAFT)
+                .code(trainingProgramRequest.getCode())
+                .startTime(trainingProgramRequest.getStartTime())
+                .duration(trainingProgramRequest.getDuration())
+                .user(userCreate)
                 .build();
 
-            //set base properties
+            
             trainingProgram.setCreateDate(new Date());
-            trainingProgram.setCreateBy("unknown");
-            trainingProgram.setModifiedBy(null);
-            trainingProgram.setModifiedDate(null);
+            trainingProgram.setCreateBy(userCreate.getName());
+            trainingProgram.setModifiedBy(userCreate.getName());
+            trainingProgram.setModifiedDate(new Date());
 
             for (Long item: trainingProgramRequest.getSyllabusListId()){
                 Syllabus syllabus = syllabusRepository.findById(item).orElse(null);

@@ -2,6 +2,7 @@ package com.example.hcm23_java14_team2.service.Impl;
 
 import java.util.List;
 
+import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentUpdateRq;
 import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,16 +101,16 @@ public class TrainingContentServiceImpl implements TrainingContentService {
     }
 
     @Override
-    public ApiResponse<Object> updateTrainingContent(Long id,TrainingContentRequest request) {
+    public ApiResponse<Object> updateTrainingContent(Long id,TrainingContentUpdateRq request) {
         try {
             TrainingContent trainingContent = trainingContentRepository.findById(id).get();
             if(trainingContent.getId()!=null){
                 trainingContent.setNameContent(request.getNameContent());
-                trainingContent.setTrainingUnit(trainingUnitRepository.findById(request.getTrainingUnitId()).get());
                 trainingContent.setOutputStandard(outputStandardRepository.findById(request.getOutputStandardId()).get());
                 trainingContent.setDuration(request.getDuration());
                 trainingContent.setMethod(request.getMethod());
                 trainingContent.setDeleveryType(request.getDeleveryType());
+                trainingContentRepository.save(trainingContent);
                 return ApiResponse.builder()
                         .statusCode("200")
                         .data(trainingContent)

@@ -30,7 +30,7 @@ public class BaseEntity {
 
     private String modifiedBy;
 
-    @Column(name="modifiedDate", updatable = false)
+    @Column(name="modifiedDate")
     @LastModifiedBy
     private Date modifiedDate;
 }
