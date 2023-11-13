@@ -1,5 +1,7 @@
 package com.example.hcm23_java14_team2.model.entities;
 
+import com.example.hcm23_java14_team2.model.entities.Enum.AttendeeClass;
+import com.example.hcm23_java14_team2.model.entities.Enum.StatusClass;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,22 +28,38 @@ public class Class extends BaseEntity{
 
     @Column(name = "class_name")
     private String className;
+
     @Column(name = "class_code")
     private String classCode;
+
     @Column(name = "duration")
     private Integer duration;
+
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StatusClass status;
+
     @Column(name = "location")
     private String location;
+
     @Column(name = "fsu")
     private String FSU;
+
     @Column(name = "start_date")
-    private Date startDate;
+    private String startDate;
+
     @Column(name = "end_date")
-    private Date endDate;
+    private String endDate;
+
+    @Column(name = "start_time")
+    private String startTime;
+
+    @Column(name = "end_time")
+    private String endTime;
+
     @Column(name = "attendee")
-    private String attendee;
+    @Enumerated(EnumType.STRING)
+    private AttendeeClass attendee;
 
     @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -10,4 +10,5 @@ public interface TrainingUnitService {
     ApiResponse<Object> updateUnitName(Long id,String name);
     ApiResponse<Object> deleteUnit(Long id);
     ApiResponse<Object> deleteDay(Long id, Integer day);
+    ApiResponse<Object> fetch1Unit(Long id);
 }
