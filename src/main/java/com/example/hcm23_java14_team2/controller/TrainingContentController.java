@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
 import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentRequest;
 
+import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentUpdateRq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
 import org.springframework.http.HttpStatus;
@@ -70,7 +71,7 @@ public class TrainingContentController {
     }
     @PatchMapping("/update")
     public ResponseEntity<?> updateTrainingContent(@RequestParam(value = "id",defaultValue = "") Long id,
-                                                   @RequestBody TrainingContentRequest request) {
+                                                   @RequestBody TrainingContentUpdateRq request) {
         return new ResponseEntity<>(trainingContentService.updateTrainingContent(id,request),HttpStatus.OK);
     }
     @DeleteMapping("/delete")
