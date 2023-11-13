@@ -22,17 +22,16 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ClassResponse deleteByIdClass(Long id) {
         try {
-            Class aClass = classRepository.findById(id).orElse(null);
-            if (aClass == null) {
+            Class Class = classRepository.findById(id).orElse(null);
+            if (Class == null) {
                 throw new NotFoundException("Class Not Found");
             }
-            System.out.println("Hello, world!" + aClass.getStatus());
             // Update
-            if (aClass.getStatus() == StatusClass.PLANNING || aClass.getStatus() == StatusClass.SCHEDULED )
+            if (Class.getStatus() == StatusClass.PLANNING || Class.getStatus() == StatusClass.SCHEDULED )
             {
-                aClass.setStatus(StatusClass.DEACTIVE);
-                classRepository.saveAndFlush(aClass);
-                return classMapper.toResponse(aClass);
+                Class.setStatus(StatusClass.DEACTIVE);
+                classRepository.saveAndFlush(Class);
+                return classMapper.toResponse(Class);
             }else {
                 throw new ValidationException("Class In Running");
             }
