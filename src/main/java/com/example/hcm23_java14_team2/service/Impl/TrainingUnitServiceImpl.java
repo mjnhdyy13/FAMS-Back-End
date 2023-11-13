@@ -5,7 +5,7 @@ import com.example.hcm23_java14_team2.model.entities.DaySyllabus;
 import com.example.hcm23_java14_team2.model.entities.Syllabus;
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
 import com.example.hcm23_java14_team2.model.entities.TrainingUnit;
-import com.example.hcm23_java14_team2.model.request.TrainingUnitRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingUnit.TrainingUnitRequest;
 import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.DayResponse;
 import com.example.hcm23_java14_team2.repository.DaySyllabusRepository;

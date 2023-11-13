@@ -1,12 +1,15 @@
 package com.example.hcm23_java14_team2.service.Impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.entities.User;
-import com.example.hcm23_java14_team2.model.request.TrainingProgramRequest;
 import com.example.hcm23_java14_team2.model.response.PageResponse;
 import com.example.hcm23_java14_team2.repository.UserRepository;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
@@ -18,10 +21,15 @@ import org.springframework.stereotype.Service;
 import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
+import com.example.hcm23_java14_team2.model.entities.Syllabus;
 import com.example.hcm23_java14_team2.model.entities.TrainingProgram;
+import com.example.hcm23_java14_team2.model.entities.Training_Syllabus;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusTrainingProgram;
 import com.example.hcm23_java14_team2.model.mapper.TrainingProgramMapper;
+import com.example.hcm23_java14_team2.model.request.TrainingProgram.InsertTrainingProgramRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingProgram.UpdateTrainingProgramRequest;
 import com.example.hcm23_java14_team2.model.response.TrainingProgramResponse;
+import com.example.hcm23_java14_team2.repository.SyllabusRepository;
 import com.example.hcm23_java14_team2.repository.TrainingProgramRepository;
 import com.example.hcm23_java14_team2.service.TrainingProgramService;
 import org.springframework.validation.BindingResult;
@@ -39,6 +47,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     private TrainingProgramMapper trainingProgramMapper;
     @Autowired
     private TrainingProgramValidator trainingProgramValidator;
+    @Autowired
+    private SyllabusRepository syllabusRepository;
 
 
     @Override
@@ -49,7 +59,16 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
         for(TrainingProgram item : PageTraining){
             var trainingProgramResponse = trainingProgramMapper.toResponse(item);
-            trainingProgramResponse.setUserNameCreate(item.getUser().getName());
+            if (item.getUser() != null){
+                trainingProgramResponse.setUserNameCreate(item.getUser().getName());
+            }
+            // get syllabus list for each training program
+            List<Syllabus> syllabusList = new ArrayList<>();
+            for (Training_Syllabus ts : item.getTraining_syllabusList()){
+                syllabusList.add(ts.getSyllabus());
+            }
+            trainingProgramResponse.setSyllabusList(syllabusList);
+            // trainingProgramResponse.setUserNameCreate(item.getUser().getName());
             trainingProgramResponses.add(trainingProgramResponse);
         }
 
@@ -104,7 +123,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
             throw ex;
         }
     }
-    public TrainingProgramResponse updateTrainingProgram(Integer id, TrainingProgramRequest trainingProgramRequest, BindingResult bindingResult) {
+    public TrainingProgramResponse updateTrainingProgram(Integer id, UpdateTrainingProgramRequest trainingProgramRequest, BindingResult bindingResult) {
         try {
             //checking trainingprogram id
             TrainingProgram existingTrainingProgram = trainingProgramRepository.findById(id)
@@ -148,36 +167,38 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     }
 
     @Override
-    public ApiResponse<Object> insertTrainingProgram(TrainingProgramRequest trainingProgramRequest) {
-        User userRequest = new User();
-        if (trainingProgramRequest.getUserId() != null) {
-            userRequest = userRepository.findById(trainingProgramRequest.getUserId()).orElseThrow(() -> new NotFoundException("Not Found User"));
-        }
+    public ApiResponse<Object> insertTrainingProgram(InsertTrainingProgramRequest trainingProgramRequest) {
+        ApiResponse<Object> apiResponse = new ApiResponse<>();
+        try{
+            List<Training_Syllabus> listTraining_Syllabus = new ArrayList<>();
 
-        var trainingProgram = TrainingProgram.builder()
-                .code(trainingProgramRequest.getCode())
+            TrainingProgram trainingProgram = TrainingProgram.builder()
                 .name(trainingProgramRequest.getName())
-                .startTime(trainingProgramRequest.getStartTime())
-                .duration(trainingProgramRequest.getDuration())
-                .status(trainingProgramRequest.getStatus())
-                .user(userRequest)
+                .status(StatusTrainingProgram.DRAFT)
                 .build();
-        try {
-            trainingProgramRepository.save(trainingProgram);
-            var response = ApiResponse
-                    .builder()
-                    .statusCode("200")
-                    .message("Insert successes")
-                    .data(trainingProgramMapper.toResponse(trainingProgram))
-                    .build();
-            return response;
-        }
-        catch (Exception e) {
-            return ApiResponse
-                    .builder()
-                    .statusCode("401")
-                    .message("Insert failed")
-                    .build();
+
+            //set base properties
+            trainingProgram.setCreateDate(new Date());
+            trainingProgram.setCreateBy("unknown");
+            trainingProgram.setModifiedBy(null);
+            trainingProgram.setModifiedDate(null);
+
+            for (Long item: trainingProgramRequest.getSyllabusListId()){
+                Syllabus syllabus = syllabusRepository.findById(item).orElse(null);
+                Training_Syllabus training_syllabus = new Training_Syllabus();
+                training_syllabus.setSyllabus(syllabus);
+                training_syllabus.setTrainingProgram(trainingProgram);
+                listTraining_Syllabus.add(training_syllabus);
+            }
+
+            trainingProgram.setTraining_syllabusList(listTraining_Syllabus);
+            
+            trainingProgramRepository.saveAndFlush(trainingProgram);
+
+            apiResponse.ok(trainingProgram);
+            return apiResponse;
+        }catch (Exception ex){
+            throw new ApplicationException();
         }
     }
 }

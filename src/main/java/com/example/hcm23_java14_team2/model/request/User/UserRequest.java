@@ -1,4 +1,4 @@
-package com.example.hcm23_java14_team2.model.request;
+package com.example.hcm23_java14_team2.model.request.User;
 
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusUser;
 import lombok.Builder;
@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
-
 @Builder
 @Getter
 @Setter
