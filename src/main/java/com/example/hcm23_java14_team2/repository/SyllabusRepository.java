@@ -9,8 +9,6 @@ import java.util.List;
 
 @Repository
 public interface SyllabusRepository extends JpaRepository<Syllabus,Long> {
-    @Query(value = "select  s from Syllabus s where s.isDeleted = false ")
-    List<Syllabus> findAll();
-
+    
 }
 

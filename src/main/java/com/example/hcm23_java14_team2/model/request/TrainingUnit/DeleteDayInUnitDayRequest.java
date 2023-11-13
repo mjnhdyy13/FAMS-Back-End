@@ -1,4 +1,4 @@
-package com.example.hcm23_java14_team2.model.request;
+package com.example.hcm23_java14_team2.model.request.TrainingUnit;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteDayInUnitRq {
+public class DeleteDayInUnitDayRequest {
     private Long id;
     private Integer day;
 }

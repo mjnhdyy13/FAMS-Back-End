@@ -3,6 +3,8 @@ package com.example.hcm23_java14_team2.controller;
 import java.util.List;
 
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
+import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
-import com.example.hcm23_java14_team2.model.request.TrainingContentRequest;
 import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.TrainingContentResponse;
 import com.example.hcm23_java14_team2.service.TrainingContentService;

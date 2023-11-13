@@ -45,7 +45,7 @@ public class TrainingProgram extends BaseEntity{
 
     @OneToMany(mappedBy = "trainingProgram", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Class> trainingProgramList = new ArrayList();
+    private List<Class> ClassList = new ArrayList();
 
     @OneToMany(mappedBy = "trainingProgram", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -53,9 +53,6 @@ public class Syllabus {
     @Enumerated(EnumType.STRING)
     private StatusSyllabus status;
 
-    @Column(columnDefinition = "boolean default false")
-    private  Boolean isDeleted;
-
     @OneToMany(mappedBy = "syllabus", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Training_Syllabus> training_syllabusList = new ArrayList();

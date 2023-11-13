@@ -3,7 +3,7 @@ package com.example.hcm23_java14_team2.controller;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
-import com.example.hcm23_java14_team2.model.request.SyllabusRequest;
+import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
 import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.OutputStandardResponse;
 import com.example.hcm23_java14_team2.model.response.SyllabusResponse;
@@ -43,7 +43,7 @@ public class SyllabusController {
     public ResponseEntity<?> getAllSyllabus(){
         try {
             ApiResponse<List<SyllabusResponse>> apiResponse = new ApiResponse<>();
-            apiResponse.ok(syllabusService.getAllSyllabs());
+            apiResponse.ok(syllabusService.getAllSyllabus());
             return new ResponseEntity<>(apiResponse, HttpStatus.OK);
         }catch (Exception e){
             throw new ApplicationException();
