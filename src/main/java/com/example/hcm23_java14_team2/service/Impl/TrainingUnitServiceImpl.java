@@ -187,6 +187,23 @@ public class TrainingUnitServiceImpl implements TrainingUnitService {
 
     }
 
+    @Override
+    public ApiResponse<Object> fetch1Unit(Long id) {
+        try {
+            var data = trainingUnitRepository.findById(id);
+            return ApiResponse.builder()
+                    .statusCode("200")
+                    .data(data)
+                    .message("Successfully!")
+                    .build();
+        } catch (Exception e){
+            return ApiResponse.builder()
+                    .statusCode("400")
+                    .message("Failed!")
+                    .build();
+        }
+    }
+
     public boolean checkExist(Long day_id, Integer num) {
         if(trainingUnitRepository.findBySyllabusAndUnitNum(day_id, num).isPresent()) {
             return false;

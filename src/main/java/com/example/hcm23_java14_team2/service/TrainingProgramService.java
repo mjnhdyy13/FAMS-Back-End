@@ -12,7 +12,7 @@ import java.util.List;
 public interface TrainingProgramService {
     PageResponse<List<TrainingProgramResponse>> getAllTrainingProgramsWithPage(String search, Integer page, Integer size);
     TrainingProgramResponse findById(Integer id);
-    List<TrainingProgramResponse> getAllTrainingPrograms(String search);
+    ApiResponse<List<TrainingProgramResponse>> getAllTrainingPrograms(String search);
     TrainingProgramResponse deleteTraining(Integer id);
     TrainingProgramResponse updateTrainingProgram(Integer id, UpdateTrainingProgramRequest trainingProgramRequest, BindingResult bindingResult);
     ApiResponse<Object> insertTrainingProgram(InsertTrainingProgramRequest trainingProgramRequest);
