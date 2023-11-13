@@ -6,12 +6,11 @@ import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.entities.Enum.Level;
 import com.example.hcm23_java14_team2.model.entities.OutputStandard;
 import com.example.hcm23_java14_team2.model.entities.Syllabus;
+import com.example.hcm23_java14_team2.model.entities.TrainingProgram;
 import com.example.hcm23_java14_team2.model.mapper.OutputStandardMapper;
 import com.example.hcm23_java14_team2.model.mapper.SyllabusMapper;
 import com.example.hcm23_java14_team2.model.request.SyllabusRequest;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.OutputStandardResponse;
-import com.example.hcm23_java14_team2.model.response.SyllabusResponse;
+import com.example.hcm23_java14_team2.model.response.*;
 
 import com.example.hcm23_java14_team2.repository.OutputStandardRepository;
 import com.example.hcm23_java14_team2.repository.SyllabusRepository;
@@ -19,9 +18,12 @@ import com.example.hcm23_java14_team2.service.SyllabusService;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +50,28 @@ public class SyllabusServiceImpl implements SyllabusService {
             throw ex;
         }
     }
+
     @Override
-    public List<SyllabusResponse> getAllSyllabs() {
-        List<SyllabusResponse> syllabusResponseList = syllabusMapper.toResponselist(syllabusRepository.findAll());
+    public PageResponse<List<SyllabusResponse>> getAllSyllabusWithPage(String search, Integer page, Integer size) {
+        var PageSyllabus = syllabusRepository.searchByNameWithPage(search,PageRequest.of(page-1,size));
+        List<SyllabusResponse> syllabusResponseList = syllabusMapper.toResponselist(PageSyllabus.getContent());
+
+        for(SyllabusResponse syllabusResponse : syllabusResponseList){
+            List<OutputStandard> outputStandardList = outputStandardRepository.findOutputStandardBySyllabusId(syllabusResponse.getId());
+            List<OutputStandardResponse> outputStandardResponses = outputStandardMapper.toResponseList(outputStandardList);
+            syllabusResponse.setOutputStandardList(outputStandardResponses);
+        }
+
+        PageResponse<List<SyllabusResponse>> listPageResponse = new PageResponse<>();
+        listPageResponse.ok(syllabusResponseList);
+        double total = Math.ceil((double)PageSyllabus.getTotalElements() / size);
+        listPageResponse.setTotalPage(total);
+        return  listPageResponse;
+    }
+
+    @Override
+    public List<SyllabusResponse> getAllSyllabus(String search) {
+        List<SyllabusResponse> syllabusResponseList = syllabusMapper.toResponselist(syllabusRepository.searchByName(search));
         for(SyllabusResponse syllabusResponse : syllabusResponseList){
             List<OutputStandard> outputStandardList = outputStandardRepository.findOutputStandardBySyllabusId(syllabusResponse.getId());
             List<OutputStandardResponse> outputStandardResponses = outputStandardMapper.toResponseList(outputStandardList);
@@ -58,6 +79,7 @@ public class SyllabusServiceImpl implements SyllabusService {
         }
         return syllabusResponseList;
     }
+
 
     @Override
     public SyllabusResponse findById(Long id) {
