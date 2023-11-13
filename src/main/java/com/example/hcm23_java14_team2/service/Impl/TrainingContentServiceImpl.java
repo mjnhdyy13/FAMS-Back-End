@@ -2,6 +2,7 @@ package com.example.hcm23_java14_team2.service.Impl;
 
 import java.util.List;
 
+import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,15 +77,34 @@ public class TrainingContentServiceImpl implements TrainingContentService {
     }
 
     @Override
-    public TrainingContentResponse updateTrainingContent(Long id, TrainingContentRequest trainingContentRequest) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateTrainingContent'");
-    }
-
-    @Override
     public TrainingContentResponse deleteTrainingContent(Long id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteTrainingContent'");
     }
-    
+
+    @Override
+    public ApiResponse<Object> updateTrainingContent(Long id,TrainingContentRequest request) {
+        try {
+            TrainingContent trainingContent = trainingContentRepository.findById(id).get();
+            if(trainingContent.getId()!=null){
+                trainingContent.setNameContent(request.getNameContent());
+                trainingContent.setTrainingUnit(trainingUnitRepository.findById(request.getTrainingUnitId()).get());
+                trainingContent.setOutputStandard(outputStandardRepository.findById(request.getOutputStandardId()).get());
+                trainingContent.setDuration(request.getDuration());
+                trainingContent.setMethod(request.getMethod());
+                trainingContent.setDeleveryType(request.getDeleveryType());
+                return ApiResponse.builder()
+                        .statusCode("200")
+                        .data(trainingContent)
+                        .message("Successfully!")
+                        .build();
+            }
+        } catch (Exception e){
+            return ApiResponse.builder()
+                    .statusCode("401")
+                    .message("Update failed!")
+                    .build();
+        }
+    }
+
 }
