@@ -175,6 +175,9 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
             TrainingProgram trainingProgram = TrainingProgram.builder()
                 .name(trainingProgramRequest.getName())
                 .status(StatusTrainingProgram.DRAFT)
+                .code(trainingProgramRequest.getCode())
+                .startTime(trainingProgramRequest.getStartTime())
+                .duration(trainingProgramRequest.getDuration())
                 .build();
 
             //set base properties
