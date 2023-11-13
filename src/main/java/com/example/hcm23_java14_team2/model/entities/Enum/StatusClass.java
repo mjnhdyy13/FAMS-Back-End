@@ -6,5 +6,4 @@ public enum StatusClass {
     CLOSED,
     DEACTIVE,
     SCHEDULED
-
 }

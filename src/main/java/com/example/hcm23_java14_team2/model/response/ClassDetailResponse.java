@@ -1,5 +1,6 @@
 package com.example.hcm23_java14_team2.model.response;
 
+import com.example.hcm23_java14_team2.model.entities.Enum.AttendeeClass;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ public class ClassDetailResponse {
     private String endTime;
     private String location;
     private String fsu;
-    private String attendee;
+    private AttendeeClass attendee;
     private String trainerName;
     private String adminName;
     private TrainingProgramViewClassResponse trainingProgram;
