@@ -55,10 +55,11 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/user-permission/**").authenticated()
                 .requestMatchers("/api/v1/syllabus/**").authenticated()
                 .anyRequest()
-                //.permitAll()
                 .authenticated()
                 .and()
-                .httpBasic(withDefaults())
+                .sessionManagement(management -> management
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // .httpBasic(withDefaults())
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(management -> management
