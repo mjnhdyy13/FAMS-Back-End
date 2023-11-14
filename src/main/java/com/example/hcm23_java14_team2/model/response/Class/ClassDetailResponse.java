@@ -1,6 +1,7 @@
-package com.example.hcm23_java14_team2.model.response;
+package com.example.hcm23_java14_team2.model.response.Class;
 
 import com.example.hcm23_java14_team2.model.entities.Enum.AttendeeClass;
+
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;

@@ -29,4 +29,8 @@ public class ApiResponse<T> {
         this.message="NOT FOUND";
     }
 
+    public void notFound(String message){
+        this.statusCode = "404";
+        this.message=message;
+    }
 }

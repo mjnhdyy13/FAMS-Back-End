@@ -4,17 +4,21 @@ import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Class.ClassDetailResponse;
 import com.example.hcm23_java14_team2.model.response.Class.ClassResponse;
 import com.example.hcm23_java14_team2.service.ClassService;
 import com.example.hcm23_java14_team2.service.TrainingSyllabusService;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.example.hcm23_java14_team2.model.entities.Class;
+import com.example.hcm23_java14_team2.model.request.Training_SyllabusRequest;
+import com.example.hcm23_java14_team2.model.request.Class.ClassSearchRequest;
+import com.example.hcm23_java14_team2.model.request.Class.ClassUpdateRequest;
+
 import java.util.List;
 
 @RestController
@@ -25,15 +29,24 @@ public class ClassController {
     private ClassService classService;
     @Autowired
     private TrainingSyllabusService trainingSyllabusService;
-    public ClassController(ClassService classService) {
-        this.classService = classService;
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getAllClasses(@RequestParam(value = "search",defaultValue = "") String search,
+                                @RequestParam(value = "page",required = false) Integer page,
+                                @RequestParam(value = "size",defaultValue = "2") Integer size) {
+        try{
+            if(page!= null)
+                return new ResponseEntity<>(classService.getAllClassesWithPage(search,page,size),HttpStatus.OK);
+            return new ResponseEntity<>(classService.getAllClasses(search),HttpStatus.OK);
+        }catch (Exception e){
+            throw new ApplicationException();
+        }
     }
+
     @PatchMapping("/update/{id}")
-    public ResponseEntity<ApiResponse> updateClass(@PathVariable  Long id,@Valid @RequestBody ClassRequest classRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> updateClass(@PathVariable Long id, @Valid @RequestBody ClassUpdateRequest classRequest, BindingResult bindingResult) {
         try {
-            ClassResponse classResponse = classService.updateClass(id,classRequest, bindingResult);
-            ApiResponse apiResponse = new ApiResponse();
-            apiResponse.ok(classResponse);
+            ApiResponse<Object> apiResponse = classService.updateClass(id,classRequest, bindingResult);
             return ResponseEntity.ok(apiResponse);
         } catch (NotFoundException ex) {
             throw ex;
@@ -46,7 +59,8 @@ public class ClassController {
     @DeleteMapping("/training_syllabus")
     public ResponseEntity<?> deleteTrainingSyllabus(@Valid @RequestBody Training_SyllabusRequest trainingSyllabusRequest, BindingResult bindingResult){
         try{
-            return new ResponseEntity<>(trainingSyllabusService.deleteTrainingSyllabus(trainingSyllabusRequest.getTrainingProgram(), trainingSyllabusRequest.getSyllabus(), bindingResult), HttpStatus.OK);
+            ApiResponse<Object> apiResponse = trainingSyllabusService.deleteTrainingSyllabus(trainingSyllabusRequest.getTrainingProgram(), trainingSyllabusRequest.getSyllabus(), bindingResult);
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
         }
         catch (Exception e){
             throw new ApplicationException();
@@ -60,27 +74,14 @@ public class ClassController {
             throw new ApplicationException();
         }
     }
-    @PostMapping("/search")
-    public ResponseEntity<?> getByClassNamOrClassCode(@RequestBody ClassSearchRequest request) {
-        try {
-            ApiResponse<List<Class>> apiResponse = new ApiResponse();
-            apiResponse.ok(classService.searchByClassName(request));
-            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-
-        } catch (NotFoundException ex) {
-            throw ex; // Rethrow NotFoundException
-        } catch (Exception ex) {
-            throw new ApplicationException(); // Handle other exceptions
-        }
-    }
+    
     @DeleteMapping(value = {"delete/{id}"})
     public ResponseEntity<?> deleteTraining(@PathVariable Long id) {
         try {
             // Delete
-            ClassResponse classResponse = classService.deleteByIdClass(id);
-            ApiResponse<ClassResponse> apiResponse = new ApiResponse<ClassResponse>();
-            apiResponse.ok(classResponse);
-            return ResponseEntity.ok(apiResponse);
+            ApiResponse<Object> apiResponse = classService.deleteByIdClass(id);
+
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
         } catch (NotFoundException ex) {
             throw ex; // Rethrow NotFoundException
         } catch (ValidationException ex) {
@@ -90,8 +91,8 @@ public class ClassController {
     @PostMapping("/search_by_calendar")
     public ResponseEntity<?> findClassesByCalendar(@RequestBody ClassSearchRequest request) {
         try{
-            ApiResponse<List<Class>> apiResponse = new ApiResponse();
-            apiResponse.ok(classService.findClasses(request));
+            ApiResponse<Object> apiResponse = classService.findClasses(request);
+            apiResponse.ok();
             return new ResponseEntity<>(apiResponse, HttpStatus.OK);
         } catch (NotFoundException ex) {
             throw ex; // Rethrow NotFoundException
@@ -103,8 +104,8 @@ public class ClassController {
     public ResponseEntity<?> getClassDetails(@PathVariable Long id)
     {
         try{
-            ApiResponse<ClassDetailResponse> apiResponse = new ApiResponse();
-            apiResponse.ok(classService.getClassDetails(id));
+            ApiResponse<Object> apiResponse = classService.getClassDetails(id);
+
             return new ResponseEntity<>(apiResponse, HttpStatus.OK);
         } catch (NotFoundException ex) {
             throw ex; // Rethrow NotFoundException

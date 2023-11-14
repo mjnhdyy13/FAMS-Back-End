@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ClassRequest {
+public class ClassUpdateRequest {
     private Long id;
     private String className;
     private String classCode;
@@ -24,6 +24,4 @@ public class ClassRequest {
     private AttendeeClass attendee;
     private String modifiedBy;
     private Integer TrainingProgramId;
-
-
 }

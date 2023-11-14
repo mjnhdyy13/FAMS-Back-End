@@ -10,6 +10,7 @@ import com.example.hcm23_java14_team2.model.entities.TrainingContent;
 import com.example.hcm23_java14_team2.model.entities.TrainingUnit;
 import com.example.hcm23_java14_team2.model.mapper.TrainingContentMapper;
 import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentUpdateRequest;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.TrainingContent.TrainingContentResponse;
 import com.example.hcm23_java14_team2.repository.OutputStandardRepository;
@@ -99,7 +100,7 @@ public class TrainingContentServiceImpl implements TrainingContentService {
     }
 
     @Override
-    public ApiResponse<Object> updateTrainingContent(Long id,TrainingContentUpdateRq request) {
+    public ApiResponse<Object> updateTrainingContent(Long id, TrainingContentUpdateRequest request) {
         try {
             TrainingContent trainingContent = trainingContentRepository.findById(id).get();
             if(trainingContent.getId()!=null){

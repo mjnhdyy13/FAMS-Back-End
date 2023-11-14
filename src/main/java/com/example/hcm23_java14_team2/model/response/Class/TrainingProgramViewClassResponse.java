@@ -1,4 +1,4 @@
-package com.example.hcm23_java14_team2.model.response;
+package com.example.hcm23_java14_team2.model.response.Class;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,5 +12,6 @@ public class TrainingProgramViewClassResponse {
     private Integer duration;
     private String modifiedBy;
     private String modifiedDate;
+    
     private List<SyllabusViewClassResponse> syllabuses;
 }

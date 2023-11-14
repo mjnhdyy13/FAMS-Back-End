@@ -4,7 +4,7 @@ import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.model.entities.Syllabus;
 import com.example.hcm23_java14_team2.model.entities.TrainingProgram;
 import com.example.hcm23_java14_team2.model.entities.Training_Syllabus;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.repository.SyllabusRepository;
 import com.example.hcm23_java14_team2.repository.TrainingProgramRepository;
 import com.example.hcm23_java14_team2.repository.Training_SyllabusRepository;
@@ -25,6 +25,7 @@ public class TrainingSyllabusServiceImpl implements TrainingSyllabusService {
     SyllabusRepository syllabusRepository;
     @Override
     public ApiResponse<Object> deleteTrainingSyllabus(Integer idTrainingSyllabus, Long idSyllabus, BindingResult bindingResult) {
+        ApiResponse<Object> apiResponse = new ApiResponse<>();
         try {
             Syllabus syllabus = syllabusRepository.findById(idSyllabus)
                     .orElseThrow(() -> new NotFoundException("Syllabus Not Found"));

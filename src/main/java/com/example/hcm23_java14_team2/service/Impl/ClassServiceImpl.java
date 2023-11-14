@@ -1,31 +1,37 @@
 package com.example.hcm23_java14_team2.service.Impl;
+
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.model.entities.*;
 import com.example.hcm23_java14_team2.model.entities.Class;
 import com.example.hcm23_java14_team2.model.entities.Enum.Role;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusClass;
-import com.example.hcm23_java14_team2.model.request.Class.ClassRequest;
+import com.example.hcm23_java14_team2.model.request.Class.ClassUpdateRequest;
 import com.example.hcm23_java14_team2.model.request.Class.ClassSearchRequest;
-import com.example.hcm23_java14_team2.model.response.ClassDetailResponse;
-import com.example.hcm23_java14_team2.model.response.SyllabusViewClassResponse;
-import com.example.hcm23_java14_team2.model.response.TrainingProgramViewClassResponse;
+import com.example.hcm23_java14_team2.model.response.PageResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Class.ClassDetailResponse;
+import com.example.hcm23_java14_team2.model.response.Class.ClassResponse;
+import com.example.hcm23_java14_team2.model.response.Class.SyllabusViewClassResponse;
+import com.example.hcm23_java14_team2.model.response.Class.TrainingProgramViewClassResponse;
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
-import com.example.hcm23_java14_team2.model.entities.Syllabus;
-import com.example.hcm23_java14_team2.model.entities.TrainingProgram;
-import com.example.hcm23_java14_team2.model.entities.Training_Syllabus;
+import com.example.hcm23_java14_team2.handler.GlobalExceptionHandler;
 import com.example.hcm23_java14_team2.model.mapper.ClassMapper;
-import com.example.hcm23_java14_team2.model.response.Class.ClassResponse;
+
 import com.example.hcm23_java14_team2.repository.ClassRepository;
 import com.example.hcm23_java14_team2.repository.SyllabusRepository;
 import com.example.hcm23_java14_team2.repository.TrainingProgramRepository;
 import com.example.hcm23_java14_team2.repository.Training_SyllabusRepository;
 import com.example.hcm23_java14_team2.service.ClassService;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -46,13 +52,11 @@ public class ClassServiceImpl implements ClassService {
     @Autowired
     private ValidatorUtil validatorUtil;
 
-    public ClassServiceImpl(ClassRepository classRepository) {
-        this.classRepository = classRepository;
-    }
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
     @Transactional
     @Override
-    public ClassResponse updateClass(Long id, ClassRequest classRequest, BindingResult bindingResult) {
+    public ApiResponse<Object> updateClass(Long id, ClassUpdateRequest classRequest, BindingResult bindingResult) {
         try {
             Class existingClass = classRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Class Not Found"));
@@ -86,49 +90,53 @@ public class ClassServiceImpl implements ClassService {
                 }
             }
             classRepository.saveAndFlush(existingClass);
-            return classMapper.toResponse(existingClass);
+
+            ApiResponse<Object> apiResponse = new ApiResponse<>();
+            ClassResponse classResponse = classMapper.toResponse(existingClass);
+            classResponse.setModifiedDate(formatter.format(date));
+            classResponse.setCreateDate(formatter.format(existingClass.getCreateDate()));
+            apiResponse.ok(classMapper.toResponse(existingClass));
+            return apiResponse;
         } catch (ApplicationException ex) {
             throw ex;
         }
     }
 
     @Override
-    public List<Class> searchByClassName(ClassSearchRequest request) {
-        List<Class> classList = classRepository.searchByClassName(request);
-        if (classList == null || classList.isEmpty()) {
-            throw new NotFoundException("Class not found with ClassName Or ClassCode ");
-        }
-        return classList;
-    }
-
-    @Override
-    public List<Class> findClasses(ClassSearchRequest request) {
+    public ApiResponse<Object> findClasses(ClassSearchRequest request) {
+        ApiResponse<Object> apiResponse = new ApiResponse<>();
         List<Class> classList = classRepository.findClasses(request);
         if (classList == null || classList.isEmpty()) {
             throw new NotFoundException("Class not found");
         }
-        return classList;
-    }
-    @Override
-    public ClassDetailResponse getClassDetails(Long id) {
-        Class aClass = classRepository.findById(id).orElseThrow(() -> new NotFoundException("Class not found with id " + id));
-        return convertToDTO(aClass);
+        apiResponse.ok(classMapper.toResponselist(classList));
+        return apiResponse;
     }
 
-    private ClassDetailResponse convertToDTO(Class aClass) {
+    @Override
+    public ApiResponse<Object> getClassDetails(Long id) {
+        ApiResponse<Object> apiResponse = new ApiResponse<>();
+        Class classDetail = classRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Class not found with id " + id));
+        ClassDetailResponse classDetailResponse = convertToDTO(classDetail);
+        apiResponse.ok(classDetailResponse);
+        return apiResponse;
+    }
+
+    private ClassDetailResponse convertToDTO(Class classDetail) {
         ClassDetailResponse classDetailResponse = new ClassDetailResponse();
-        classDetailResponse.setCreateBy(aClass.getCreateBy());
-        classDetailResponse.setCreateDate(String.valueOf(aClass.getCreateDate()));
-        classDetailResponse.setModifiedBy(aClass.getModifiedBy());
-        classDetailResponse.setModifiedDate(String.valueOf(aClass.getModifiedDate()));
-        classDetailResponse.setClassName(aClass.getClassName());
-        classDetailResponse.setClassCode(aClass.getClassCode());
-        classDetailResponse.setAttendee(aClass.getAttendee());
-        classDetailResponse.setStartTime(aClass.getStartTime());
-        classDetailResponse.setEndTime(aClass.getEndTime());
-        classDetailResponse.setLocation(aClass.getLocation());
-        classDetailResponse.setFsu(aClass.getFSU());
-        for (Class_User cu : aClass.getClassUserList()) {
+        classDetailResponse.setCreateBy(classDetail.getCreateBy());
+        classDetailResponse.setCreateDate(String.valueOf(classDetail.getCreateDate()));
+        classDetailResponse.setModifiedBy(classDetail.getModifiedBy());
+        classDetailResponse.setModifiedDate(String.valueOf(classDetail.getModifiedDate()));
+        classDetailResponse.setClassName(classDetail.getClassName());
+        classDetailResponse.setClassCode(classDetail.getClassCode());
+        classDetailResponse.setAttendee(classDetail.getAttendee());
+        classDetailResponse.setStartTime(classDetail.getStartTime());
+        classDetailResponse.setEndTime(classDetail.getEndTime());
+        classDetailResponse.setLocation(classDetail.getLocation());
+        classDetailResponse.setFsu(classDetail.getFSU());
+        for (Class_User cu : classDetail.getClassUserList()) {
             User user = cu.getUser();
             Role role = user.getUserPermission().getRoleName();
             if (role == Role.TRAINER) {
@@ -140,7 +148,7 @@ public class ClassServiceImpl implements ClassService {
             }
         }
 
-        TrainingProgram trainingProgram = aClass.getTrainingProgram();
+        TrainingProgram trainingProgram = classDetail.getTrainingProgram();
         if (trainingProgram != null) {
             TrainingProgramViewClassResponse trainingProgramViewClassResponse = convertTrainingProgramToDTO(trainingProgram);
             classDetailResponse.setTrainingProgram(trainingProgramViewClassResponse);
@@ -178,7 +186,8 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public ClassResponse deleteByIdClass(Long id) {
+    public ApiResponse<Object> deleteByIdClass(Long id) {
+        ApiResponse<Object> apiResponse = new ApiResponse<>();
         try {
             Class Class = classRepository.findById(id).orElse(null);
             if (Class == null) {
@@ -188,13 +197,46 @@ public class ClassServiceImpl implements ClassService {
             if (Class.getStatus() == StatusClass.PLANNING || Class.getStatus() == StatusClass.SCHEDULED) {
                 Class.setStatus(StatusClass.DEACTIVE);
                 classRepository.saveAndFlush(Class);
-                return classMapper.toResponse(Class);
+                ClassResponse classResponse = classMapper.toResponse(Class);
+                apiResponse.ok(classResponse);
             } else {
-                throw new ValidationException("Class In Running");
+                apiResponse.notFound("Not found class");
             }
-
+            return apiResponse;
         } catch (ApplicationException ex) {
             throw ex;
         }
+    }
+
+    @Override
+    public ApiResponse<Object> getAllClasses(String search) {
+        var classList = classRepository.searchByName(search);
+        List<ClassResponse> classResponses = classMapper.toResponselist(classList);
+
+        for (var item: classResponses){
+            item.setCreateDate(formatter.format(item.getCreateDate()));
+            item.setModifiedDate(formatter.format(item.getModifiedDate()));
+        }
+        
+        PageResponse<Object> apiResponse = new PageResponse<>();
+        apiResponse.ok(classResponses);
+        return apiResponse;
+    }
+
+    @Override
+    public PageResponse<Object> getAllClassesWithPage(String searchName, Integer page, Integer size) {
+        var PageClass = classRepository.searchByClassName(searchName, PageRequest.of(page-1,size));
+        List<ClassResponse> classResponses = classMapper.toResponselist(PageClass.getContent());
+
+        for (var item: classResponses){
+            item.setCreateDate(formatter.format(item.getCreateDate()));
+            item.setModifiedDate(formatter.format(item.getModifiedDate()));
+        }
+        
+        PageResponse<Object> pageResponse = new PageResponse<>();
+        pageResponse.ok(classResponses);
+        double total = Math.ceil((double)PageClass.getTotalElements() / size);
+        pageResponse.setTotalPage(total);
+        return pageResponse;
     }
 }

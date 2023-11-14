@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
 import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentUpdateRequest;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.TrainingContent.TrainingContentResponse;
 
@@ -13,5 +14,5 @@ public interface TrainingContentService {
     TrainingContentResponse insertTrainingContent(TrainingContentRequest trainingContentRequest);
     //TrainingContentResponse updateTrainingContent(Long id, TrainingContentRequest trainingContentRequest);
     ApiResponse<Object> deleteTrainingContent(Long id);
-    ApiResponse<Object> updateTrainingContent(Long id, TrainingContentUpdateRq request);
+    ApiResponse<Object> updateTrainingContent(Long id, TrainingContentUpdateRequest request);
 }

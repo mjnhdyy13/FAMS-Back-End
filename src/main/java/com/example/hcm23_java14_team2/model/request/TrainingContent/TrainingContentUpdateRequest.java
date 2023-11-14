@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TrainingContentUpdateRq {
+public class TrainingContentUpdateRequest {
     private String nameContent;
     private DeleveryType deleveryType;
     private Integer duration;

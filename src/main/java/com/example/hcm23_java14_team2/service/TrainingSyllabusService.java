@@ -1,7 +1,8 @@
 package com.example.hcm23_java14_team2.service;
 
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import org.springframework.validation.BindingResult;
+
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 
 public interface TrainingSyllabusService {
     ApiResponse<Object> deleteTrainingSyllabus(Integer idTrainingSyllabus, Long idSyllabus, BindingResult bindingResult);
