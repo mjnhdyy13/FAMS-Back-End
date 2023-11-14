@@ -4,9 +4,8 @@ import java.util.List;
 
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
 import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentRequest;
-import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentUpdateRq;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.TrainingContentResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.TrainingContent.TrainingContentResponse;
 
 public interface TrainingContentService {
     List<TrainingContent> getAll();

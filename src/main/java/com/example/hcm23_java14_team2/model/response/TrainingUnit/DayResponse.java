@@ -1,4 +1,4 @@
-package com.example.hcm23_java14_team2.model.response;
+package com.example.hcm23_java14_team2.model.response.TrainingUnit;
 
 import com.example.hcm23_java14_team2.model.entities.TrainingUnit;
 import lombok.*;

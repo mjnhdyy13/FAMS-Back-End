@@ -3,7 +3,8 @@ package com.example.hcm23_java14_team2.handler;
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

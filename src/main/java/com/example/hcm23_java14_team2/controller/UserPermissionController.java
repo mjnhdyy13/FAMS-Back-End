@@ -2,9 +2,8 @@ package com.example.hcm23_java14_team2.controller;
 
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
-
-import com.example.hcm23_java14_team2.model.response.UserPermissionResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.UserPermission.UserPermissionResponse;
 import com.example.hcm23_java14_team2.service.UserPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

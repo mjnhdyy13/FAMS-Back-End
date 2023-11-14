@@ -1,5 +1,6 @@
-package com.example.hcm23_java14_team2.model.response;
+package com.example.hcm23_java14_team2.model.response.OutputStandard;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 

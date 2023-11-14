@@ -2,12 +2,9 @@ package com.example.hcm23_java14_team2.controller;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
-import com.example.hcm23_java14_team2.model.request.Class.ClassRequest;
-import com.example.hcm23_java14_team2.model.request.Class.ClassSearchRequest;
-import com.example.hcm23_java14_team2.model.request.Training_SyllabusRequest;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.ClassDetailResponse;
-import com.example.hcm23_java14_team2.model.response.ClassResponse;
+import com.example.hcm23_java14_team2.exception.ValidationException;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Class.ClassResponse;
 import com.example.hcm23_java14_team2.service.ClassService;
 import com.example.hcm23_java14_team2.service.TrainingSyllabusService;
 import jakarta.validation.Valid;

@@ -1,4 +1,4 @@
-package com.example.hcm23_java14_team2.model.response;
+package com.example.hcm23_java14_team2.model.response.User;
 
 import com.example.hcm23_java14_team2.model.entities.BaseEntity;
 import com.example.hcm23_java14_team2.model.entities.Enum.Role;
@@ -10,7 +10,6 @@ import lombok.*;
 import java.util.Date;
 @Getter
 @Setter
-@Builder
 public class UserResponse extends BaseEntity {
     private Long id;
     private String name;

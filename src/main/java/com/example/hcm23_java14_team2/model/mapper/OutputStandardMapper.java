@@ -1,9 +1,11 @@
 package com.example.hcm23_java14_team2.model.mapper;
 
-import com.example.hcm23_java14_team2.model.entities.OutputStandard;
-import com.example.hcm23_java14_team2.model.response.OutputStandardResponse;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import com.example.hcm23_java14_team2.model.entities.OutputStandard;
+import com.example.hcm23_java14_team2.model.response.OutputStandard.OutputStandardResponse;
 
 import java.util.List;
 

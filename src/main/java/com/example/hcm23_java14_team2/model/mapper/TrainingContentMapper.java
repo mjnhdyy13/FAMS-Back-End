@@ -6,7 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
-import com.example.hcm23_java14_team2.model.response.TrainingContentResponse;
+import com.example.hcm23_java14_team2.model.response.TrainingContent.TrainingContentResponse;
+
 
 @Mapper(componentModel = "spring")
 public interface TrainingContentMapper {

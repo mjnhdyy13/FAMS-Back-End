@@ -15,7 +15,7 @@ import com.example.hcm23_java14_team2.model.entities.Syllabus;
 import com.example.hcm23_java14_team2.model.entities.TrainingProgram;
 import com.example.hcm23_java14_team2.model.entities.Training_Syllabus;
 import com.example.hcm23_java14_team2.model.mapper.ClassMapper;
-import com.example.hcm23_java14_team2.model.response.ClassResponse;
+import com.example.hcm23_java14_team2.model.response.Class.ClassResponse;
 import com.example.hcm23_java14_team2.repository.ClassRepository;
 import com.example.hcm23_java14_team2.repository.SyllabusRepository;
 import com.example.hcm23_java14_team2.repository.TrainingProgramRepository;

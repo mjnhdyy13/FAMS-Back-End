@@ -1,8 +1,10 @@
 package com.example.hcm23_java14_team2.model.mapper;
 
-import com.example.hcm23_java14_team2.model.entities.Syllabus;
+
 import org.mapstruct.Mapper;
-import com.example.hcm23_java14_team2.model.response.SyllabusResponse;
+
+import com.example.hcm23_java14_team2.model.entities.Syllabus;
+import com.example.hcm23_java14_team2.model.response.Syllabus.SyllabusResponse;
 
 import java.util.List;
 

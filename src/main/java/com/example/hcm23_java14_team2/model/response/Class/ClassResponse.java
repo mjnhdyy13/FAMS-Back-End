@@ -1,12 +1,10 @@
-package com.example.hcm23_java14_team2.model.response;
+package com.example.hcm23_java14_team2.model.response.Class;
 
 import com.example.hcm23_java14_team2.model.entities.Enum.AttendeeClass;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusClass;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 @Getter
 @Setter

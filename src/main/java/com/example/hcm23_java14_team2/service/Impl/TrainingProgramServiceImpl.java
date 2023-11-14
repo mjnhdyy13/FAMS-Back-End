@@ -1,13 +1,10 @@
 package com.example.hcm23_java14_team2.service.Impl;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.entities.User;
@@ -15,11 +12,14 @@ import com.example.hcm23_java14_team2.model.response.PageResponse;
 import com.example.hcm23_java14_team2.repository.UserRepository;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
 import com.example.hcm23_java14_team2.validator.TrainingProgramValidator;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
+
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.model.entities.Syllabus;
@@ -29,7 +29,9 @@ import com.example.hcm23_java14_team2.model.entities.Enum.StatusTrainingProgram;
 import com.example.hcm23_java14_team2.model.mapper.TrainingProgramMapper;
 import com.example.hcm23_java14_team2.model.request.TrainingProgram.InsertTrainingProgramRequest;
 import com.example.hcm23_java14_team2.model.request.TrainingProgram.UpdateTrainingProgramRequest;
-import com.example.hcm23_java14_team2.model.response.TrainingProgramResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.TrainingProgram.InsertTrainingProgramResponse;
+import com.example.hcm23_java14_team2.model.response.TrainingProgram.UpdateTrainingProgramResponse;
 import com.example.hcm23_java14_team2.repository.SyllabusRepository;
 import com.example.hcm23_java14_team2.repository.TrainingProgramRepository;
 import com.example.hcm23_java14_team2.service.TrainingProgramService;
@@ -54,34 +56,29 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
-    public PageResponse<List<TrainingProgramResponse>> getAllTrainingProgramsWithPage(String search, Integer page, Integer size){
+    public PageResponse<List<UpdateTrainingProgramResponse>> getAllTrainingProgramsWithPage(String search, Integer page, Integer size){
         Page<TrainingProgram> t = trainingProgramRepository.searchByNameWithPage(search,PageRequest.of(page-1,size));
-        List<TrainingProgram>  PageTraining = t.getContent();
-        List<TrainingProgramResponse> trainingProgramResponses = new ArrayList<>();
+        List<TrainingProgram> PageTraining = t.getContent();
+        List<UpdateTrainingProgramResponse> trainingProgramResponses = new ArrayList<>();
 
         for(TrainingProgram item : PageTraining){
-            var trainingProgramResponse = trainingProgramMapper.toResponse(item);
+            var trainingProgramResponse = trainingProgramMapper.toUpdateResponse(item);
             //check if some properties is null then skip
-            if (item.getUser() != null){
-                trainingProgramResponse.setCreateBy(item.getUser().getName());
-            }
             if (item.getCreateDate() != null){
-                 trainingProgramResponse.setCreateOn(formatter.format(item.getCreateDate()));
+                 trainingProgramResponse.setCreateDate(formatter.format(item.getCreateDate()));
+            }
+            if (item.getModifiedDate() != null){
+                trainingProgramResponse.setModifiedDate(formatter.format(item.getModifiedDate()));
             }
 
             // get syllabus list for each training program
-            List<Syllabus> syllabusList = new ArrayList<>();
-            for (Training_Syllabus ts : item.getTraining_syllabusList()){
-                syllabusList.add(ts.getSyllabus());
-            }
-            trainingProgramResponse.setSyllabusList(syllabusList);
-            
+            trainingProgramResponse.setSyllabusList(getSyllabusList(item));
            
             // trainingProgramResponse.setUserNameCreate(item.getUser().getName());
             trainingProgramResponses.add(trainingProgramResponse);
         }
 
-        PageResponse<List<TrainingProgramResponse>> listPageResponse = new PageResponse<>();
+        PageResponse<List<UpdateTrainingProgramResponse>> listPageResponse = new PageResponse<>();
         listPageResponse.ok(trainingProgramResponses);
         double total = Math.ceil((double)t.getTotalElements() / size);
         listPageResponse.setTotalPage(total);
@@ -91,48 +88,46 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
 
     @Override
-    public TrainingProgramResponse findById(Integer id) {
+    public UpdateTrainingProgramResponse findById(Integer id) {
         TrainingProgram trainingProgram = trainingProgramRepository.findById(id).orElse(null);
 
         if (trainingProgram == null){
             return null;
         }
-        TrainingProgramResponse trainingProgramResponse = trainingProgramMapper.toResponse(trainingProgram);
+        UpdateTrainingProgramResponse trainingProgramResponse = trainingProgramMapper.toUpdateResponse(trainingProgram);
         if (trainingProgram.getUser() != null){
                 trainingProgramResponse.setCreateBy(trainingProgram.getUser().getName());
         }
         if (trainingProgram.getCreateDate() != null){
-                 trainingProgramResponse.setCreateOn(formatter.format(trainingProgram.getCreateDate()));
+                 trainingProgramResponse.setCreateDate(formatter.format(trainingProgram.getCreateDate()));
         }
-        List<Syllabus> syllabusList = new ArrayList<>();
-        for (Training_Syllabus item: trainingProgram.getTraining_syllabusList()){
-            syllabusList.add(item.getSyllabus());
-        }
-        trainingProgramResponse.setSyllabusList(syllabusList);
+        
+        trainingProgramResponse.setSyllabusList(getSyllabusList(trainingProgram));
         return trainingProgramResponse;
     }
 
     @Override
-    public ApiResponse<List<TrainingProgramResponse>> getAllTrainingPrograms(String search) {
+    public ApiResponse<List<InsertTrainingProgramResponse>> getAllTrainingPrograms(String search) {
         List<TrainingProgram> trainingPrograms = trainingProgramRepository.searchByName(search);
-        List<TrainingProgramResponse> trainingProgramResponses = new ArrayList<>();
+        List<InsertTrainingProgramResponse> trainingProgramResponses = new ArrayList<>();
 
         
         //set base properties
         for (TrainingProgram item : trainingPrograms){
             var trainingProgramResponse = trainingProgramMapper.toResponse(item);
             trainingProgramResponse.setCreateBy(item.getUser().getName());
-            trainingProgramResponse.setCreateOn(formatter.format(item.getCreateDate()));
+            trainingProgramResponse.setCreateDate(formatter.format(item.getCreateDate()));
             trainingProgramResponses.add(trainingProgramResponse);
 
         }
-        ApiResponse<List<TrainingProgramResponse>> apiResponse = new ApiResponse<>();
+        ApiResponse<List<InsertTrainingProgramResponse>> apiResponse = new ApiResponse<>();
         apiResponse.ok(trainingProgramResponses);
         return apiResponse;
     }
     
     @Override
-    public TrainingProgramResponse deleteTraining(Integer id){
+    public ApiResponse<InsertTrainingProgramResponse> deleteTraining(Integer id){
+        ApiResponse<InsertTrainingProgramResponse> apiResponse = new ApiResponse<>();
         try {
             TrainingProgram trainingProgram = trainingProgramRepository.findById(id).orElse(null);
             if (trainingProgram == null) {
@@ -142,12 +137,15 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
             trainingProgram.setStatus(StatusTrainingProgram.valueOf("INACTIVE"));
             trainingProgramRepository.saveAndFlush(trainingProgram);
 
-            return trainingProgramMapper.toResponse(trainingProgram);
+            apiResponse.ok(trainingProgramMapper.toResponse(trainingProgram));
+            return apiResponse;
         } catch (ApplicationException ex) {
             throw ex;
         }
     }
-    public TrainingProgramResponse updateTrainingProgram(Integer id, UpdateTrainingProgramRequest trainingProgramRequest, BindingResult bindingResult) {
+    @Transactional
+    public ApiResponse<UpdateTrainingProgramResponse> updateTrainingProgram(Integer id, UpdateTrainingProgramRequest trainingProgramRequest, BindingResult bindingResult) {
+        ApiResponse<UpdateTrainingProgramResponse> apiResponse = new ApiResponse<>();
         try {
             //checking trainingprogram id
             TrainingProgram existingTrainingProgram = trainingProgramRepository.findById(id)
@@ -178,13 +176,21 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
             if (trainingProgramRequest.getStatus() != null) {
                 existingTrainingProgram.setStatus(trainingProgramRequest.getStatus());
             }
-            if (trainingProgramRequest.getUserId() != null) {
-                User user = userRepository.findById(trainingProgramRequest.getUserId()).orElseThrow(() -> new NotFoundException(""));
+            if (trainingProgramRequest.getUserModified() != null) {
+                User user = userRepository.findById(trainingProgramRequest.getUserModified()).orElseThrow(() -> new NotFoundException("there is no user available"));
                 existingTrainingProgram.setUser(user);
             }
-
+            trainingProgramRepository.removeSyllabusList(existingTrainingProgram.getId());
+            existingTrainingProgram.setTraining_syllabusList(getTraining_SyllabusList(trainingProgramRequest.getSyllabusListId(), existingTrainingProgram));
+            existingTrainingProgram.setModifiedBy(userRepository.findById(trainingProgramRequest.getUserModified()).get().getName());
+            existingTrainingProgram.setModifiedDate(new Date());
             trainingProgramRepository.saveAndFlush(existingTrainingProgram);
-            return trainingProgramMapper.toResponse(existingTrainingProgram);
+            
+            UpdateTrainingProgramResponse trainingProgramResponse = trainingProgramMapper.toUpdateResponse(existingTrainingProgram);
+            trainingProgramResponse.setSyllabusList(getSyllabusList(existingTrainingProgram));
+            trainingProgramResponse.setModifiedDate(formatter.format(new Date()));
+            apiResponse.ok(trainingProgramResponse);
+            return apiResponse;
         } catch (ApplicationException ex) {
             throw ex;
         }
@@ -229,5 +235,28 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         }catch (Exception ex){
             throw new ApplicationException();
         }
+    }
+
+    private List<Syllabus> getSyllabusList(TrainingProgram trainingProgram){
+        List<Syllabus> syllabusList = new ArrayList<>();
+        for (Training_Syllabus item: trainingProgram.getTraining_syllabusList()){
+            syllabusList.add(item.getSyllabus());
+        }
+        return syllabusList;
+    }
+
+    private List<Training_Syllabus> getTraining_SyllabusList(List<Long> syllabusListId, TrainingProgram trainingProgram){
+        List<Training_Syllabus> training_syllabusList = new ArrayList<>();
+        for (Long id: syllabusListId){
+            Training_Syllabus training_syllabus = new Training_Syllabus();
+            Syllabus syllabus = syllabusRepository.findById(id).orElse(null);
+            if (syllabus != null){
+                training_syllabus.setSyllabus(syllabus);
+                training_syllabus.setTrainingProgram(trainingProgram);
+                training_syllabusList.add(training_syllabus);
+            }
+        }
+        return training_syllabusList;
+        
     }
 }
