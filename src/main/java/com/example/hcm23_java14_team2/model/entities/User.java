@@ -60,7 +60,11 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(userPermission.getRoleName().name()));
+        return List.of(new SimpleGrantedAuthority(userPermission.getSyllabus().name()+"_SYLLABUS"),
+                new SimpleGrantedAuthority(userPermission.getClassRoom().name()+"_CLASS"),
+                new SimpleGrantedAuthority(userPermission.getTrainingProgram().name()+"_TRAINING"),
+                new SimpleGrantedAuthority(userPermission.getUser().name()+"_USER")
+        );
     }
 
     @Override
