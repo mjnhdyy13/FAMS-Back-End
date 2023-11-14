@@ -28,13 +28,10 @@ public class SecurityConfig {
                 .requestMatchers("/apv/v1/user-permission/**") //auth with this all request
                 .authenticated()
                 .anyRequest()
-                .permitAll()
+                .authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-// //                .and()
-// //                .formLogin()
-// //                .loginProcessingUrl("/api/v1/auth/authenticate")//login if no auth
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
