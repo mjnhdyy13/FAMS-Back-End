@@ -29,8 +29,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf()
-                .disable()
+                .csrf(csrf -> csrf
+                        .disable())
                 .authorizeHttpRequests()
                 .requestMatchers("/v2/api-docs",
                         "/v3/api-docs",
@@ -43,32 +43,26 @@ public class SecurityConfig {
                         "/webjars/**",
                         "/swagger-ui.html").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/v1/syllabus/**").hasAnyAuthority("VIEW_SYLLABUS","FULLACCESS_SYLLABUS")
-                .requestMatchers(HttpMethod.POST,"/api/v1/syllabus/**").hasAnyAuthority("CREATE_SYLLABUS","FULLACCESS_SYLLABUS")
-                .requestMatchers(HttpMethod.PUT,"/api/v1/syllabus/**").hasAnyAuthority("MODIFY_SYLLABUS","FULLACCESS_SYLLABUS")
-                .requestMatchers(HttpMethod.GET,"/api/v1/user/**").hasAnyAuthority("VIEW_USER","FULLACCESS_USER")
-                .requestMatchers(HttpMethod.POST,"/api/v1/user/**").hasAnyAuthority("CREATE_USER","FULLACCESS_USER")
-                .requestMatchers(HttpMethod.PUT,"/api/v1/user/**").hasAnyAuthority("MODIFY_USER","FULLACCESS_USER")
-                .requestMatchers(HttpMethod.GET,"/api/v1/trainingProgram/**").hasAnyAuthority("VIEW_TRAINING","FULLACCESS_TRAINING")
-                .requestMatchers(HttpMethod.POST,"/api/v1/trainingProgram/**").hasAnyAuthority("CREATE_TRAINING","FULLACCESS_TRAINING")
-                .requestMatchers(HttpMethod.PUT,"/api/v1/trainingProgram/**").hasAnyAuthority("MODIFY_TRAINING","FULLACCESS_TRAINING")
-                //.requestMatchers("/api/v1/user-permission/**").authenticated()
-                //.requestMatchers("/api/v1/syllabus/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/v1/syllabus/**").hasAnyAuthority("VIEW_SYLLABUS", "FULLACCESS_SYLLABUS")
+                .requestMatchers(HttpMethod.POST, "/api/v1/syllabus/**").hasAnyAuthority("CREATE_SYLLABUS", "FULLACCESS_SYLLABUS")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/syllabus/**").hasAnyAuthority("MODIFY_SYLLABUS", "FULLACCESS_SYLLABUS")
+                .requestMatchers(HttpMethod.GET, "/api/v1/user/**").hasAnyAuthority("VIEW_USER", "FULLACCESS_USER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasAnyAuthority("CREATE_USER", "FULLACCESS_USER")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/user/**").hasAnyAuthority("MODIFY_USER", "FULLACCESS_USER")
+                .requestMatchers(HttpMethod.GET, "/api/v1/trainingProgram/**").hasAnyAuthority("VIEW_TRAINING", "FULLACCESS_TRAINING")
+                .requestMatchers(HttpMethod.POST, "/api/v1/trainingProgram/**").hasAnyAuthority("CREATE_TRAINING", "FULLACCESS_TRAINING")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/trainingProgram/**").hasAnyAuthority("MODIFY_TRAINING", "FULLACCESS_TRAINING")
+                .requestMatchers("/api/v1/user-permission/**").authenticated()
+                .requestMatchers("/api/v1/syllabus/**").authenticated()
                 .anyRequest()
                 //.permitAll()
                 .authenticated()
                 .and()
-                .httpBasic()
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(authEntryPoint)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-// //                .and()
-// //                .formLogin()
-// //                .loginProcessingUrl("/api/v1/auth/authenticate")//login if no auth
-                .and()
+                .httpBasic(withDefaults())
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint(authEntryPoint))
+                .sessionManagement(management -> management
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
