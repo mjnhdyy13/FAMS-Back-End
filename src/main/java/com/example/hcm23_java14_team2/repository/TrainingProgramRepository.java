@@ -4,6 +4,7 @@ import com.example.hcm23_java14_team2.model.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import com.example.hcm23_java14_team2.model.entities.TrainingProgram;
@@ -19,4 +20,7 @@ public interface TrainingProgramRepository extends JpaRepository<TrainingProgram
     @Query("select t from TrainingProgram t where t.name like %?1%")
     List<TrainingProgram> searchByName(String name);
     
+    @Modifying
+    @Query("delete from Training_Syllabus ts where ts.trainingProgram.id = ?1")
+    void removeSyllabusList(Integer id);
 }

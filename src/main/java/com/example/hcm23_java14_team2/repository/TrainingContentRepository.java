@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface TrainingContentRepository extends JpaRepository<TrainingContent, Long> {
     @Query(value = "select ss " +
             "from TrainingContent ss " +

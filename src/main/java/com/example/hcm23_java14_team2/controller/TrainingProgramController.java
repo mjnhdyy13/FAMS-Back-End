@@ -2,8 +2,10 @@ package com.example.hcm23_java14_team2.controller;
 
 import java.util.List;
 
-import com.example.hcm23_java14_team2.model.request.SyllabusRequest;
-import com.example.hcm23_java14_team2.model.request.TrainingProgramRequest;
+import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingProgram.InsertTrainingProgramRequest;
+import com.example.hcm23_java14_team2.model.request.TrainingProgram.UpdateTrainingProgramRequest;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,8 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.TrainingProgramResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.TrainingProgram.InsertTrainingProgramResponse;
+import com.example.hcm23_java14_team2.model.response.TrainingProgram.UpdateTrainingProgramResponse;
 import com.example.hcm23_java14_team2.service.TrainingProgramService;
 
 @RestController
@@ -41,9 +44,9 @@ public class TrainingProgramController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(Integer id) {
-        ApiResponse<TrainingProgramResponse> apiResponse = new ApiResponse<TrainingProgramResponse>();
+        ApiResponse<UpdateTrainingProgramResponse> apiResponse = new ApiResponse<UpdateTrainingProgramResponse>();
         try { 
-            TrainingProgramResponse trainingProgramResponse = trainingProgramService.findById(id);
+            UpdateTrainingProgramResponse trainingProgramResponse = trainingProgramService.findById(id);
             if (trainingProgramResponse == null){
                 apiResponse.notFound();
                 return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
@@ -60,13 +63,11 @@ public class TrainingProgramController {
     @DeleteMapping(value = {"delete/{id}"})
     public ResponseEntity<?> deleteTraining(@PathVariable Integer id) {
         try {
-            // Delete
-            TrainingProgramResponse trainingProgramResponse = trainingProgramService.deleteTraining(id);
-
+            
             // Response
-            ApiResponse<TrainingProgramResponse> apiResponse = new ApiResponse<TrainingProgramResponse>();
-            apiResponse.ok(trainingProgramResponse);
+            ApiResponse<InsertTrainingProgramResponse> apiResponse = trainingProgramService.deleteTraining(id);
             return ResponseEntity.ok(apiResponse);
+
         } catch (NotFoundException ex) {
             throw ex; // Rethrow NotFoundException
         } catch (ValidationException ex) {
@@ -76,22 +77,20 @@ public class TrainingProgramController {
         }
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateTrainingProgram(@PathVariable Integer id, @Valid @RequestBody TrainingProgramRequest trainingProgramRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> updateTrainingProgram(@PathVariable Integer id, @Valid @RequestBody UpdateTrainingProgramRequest trainingProgramRequest, BindingResult bindingResult) {
         try {
-            TrainingProgramResponse trainingProgramResponse = trainingProgramService.updateTrainingProgram(id,trainingProgramRequest, bindingResult);
-            ApiResponse<TrainingProgramResponse> apiResponse = new ApiResponse<TrainingProgramResponse>();
-            apiResponse.ok(trainingProgramResponse);
+            ApiResponse<UpdateTrainingProgramResponse> apiResponse = trainingProgramService.updateTrainingProgram(id,trainingProgramRequest, bindingResult);
             return ResponseEntity.ok(apiResponse);
         } catch (NotFoundException ex) {
             throw ex;
         } catch (jakarta.validation.ValidationException ex) {
             throw ex;
         } catch (Exception ex) {
-            throw new ApplicationException();
+            throw new ApplicationException(ex.getMessage());
         }
     }
     @PostMapping("/add")
-    public ResponseEntity<?> insertTraingProgram(@RequestBody TrainingProgramRequest request) {
+    public ResponseEntity<?> insertTraingProgram(@RequestBody InsertTrainingProgramRequest request) {
         try {
             return new ResponseEntity<>(trainingProgramService.insertTrainingProgram(request), HttpStatus.OK);
         } catch (NotFoundException ex) {

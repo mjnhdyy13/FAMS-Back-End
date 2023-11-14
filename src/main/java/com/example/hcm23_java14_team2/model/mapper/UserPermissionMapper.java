@@ -1,8 +1,10 @@
 package com.example.hcm23_java14_team2.model.mapper;
 
-import com.example.hcm23_java14_team2.model.entities.UserPermission;
-import com.example.hcm23_java14_team2.model.response.UserPermissionResponse;
+
 import org.mapstruct.Mapper;
+
+import com.example.hcm23_java14_team2.model.entities.UserPermission;
+import com.example.hcm23_java14_team2.model.response.UserPermission.UserPermissionResponse;
 
 import java.util.List;
 

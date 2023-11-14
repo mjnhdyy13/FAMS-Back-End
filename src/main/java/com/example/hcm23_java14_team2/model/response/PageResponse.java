@@ -1,5 +1,7 @@
 package com.example.hcm23_java14_team2.model.response;
 
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

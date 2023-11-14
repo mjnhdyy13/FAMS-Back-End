@@ -3,11 +3,10 @@ package com.example.hcm23_java14_team2.service.Impl;
 import com.example.hcm23_java14_team2.model.entities.ConfirmationToken;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusUser;
 import com.example.hcm23_java14_team2.model.entities.User;
-import com.example.hcm23_java14_team2.model.request.AuthRequest;
-import com.example.hcm23_java14_team2.model.request.RegisterRequest;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.AuthenticationResponse;
-
+import com.example.hcm23_java14_team2.model.request.Auth.AuthRequest;
+import com.example.hcm23_java14_team2.model.request.Auth.RegisterRequest;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Auth.AuthenticationResponse;
 import com.example.hcm23_java14_team2.repository.UserPermissionRepository;
 import com.example.hcm23_java14_team2.repository.UserRepository;
 import com.example.hcm23_java14_team2.security.JwtService;

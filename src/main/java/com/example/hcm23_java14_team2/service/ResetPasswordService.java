@@ -1,6 +1,6 @@
 package com.example.hcm23_java14_team2.service;
 
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 
 public interface ResetPasswordService {
     ApiResponse<Object> sendEmail(String email);

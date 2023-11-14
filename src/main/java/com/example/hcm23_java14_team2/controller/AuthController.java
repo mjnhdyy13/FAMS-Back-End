@@ -1,9 +1,9 @@
 package com.example.hcm23_java14_team2.controller;
 
-import com.example.hcm23_java14_team2.model.request.AuthRequest;
-import com.example.hcm23_java14_team2.model.request.ChangePasswordRequest;
-import com.example.hcm23_java14_team2.model.request.RegisterRequest;
-import com.example.hcm23_java14_team2.model.request.RequireTokenToChangePw;
+import com.example.hcm23_java14_team2.model.request.Auth.AuthRequest;
+import com.example.hcm23_java14_team2.model.request.Auth.ChangePasswordRequest;
+import com.example.hcm23_java14_team2.model.request.Auth.RegisterRequest;
+import com.example.hcm23_java14_team2.model.request.Auth.RequireTokenToChangePw;
 import com.example.hcm23_java14_team2.service.AuthenticationService;
 import com.example.hcm23_java14_team2.service.ResetPasswordService;
 import lombok.RequiredArgsConstructor;
