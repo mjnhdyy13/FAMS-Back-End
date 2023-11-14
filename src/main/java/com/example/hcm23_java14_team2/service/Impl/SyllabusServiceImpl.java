@@ -11,19 +11,19 @@ import com.example.hcm23_java14_team2.model.mapper.OutputStandardMapper;
 import com.example.hcm23_java14_team2.model.mapper.SyllabusMapper;
 import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
 import com.example.hcm23_java14_team2.model.response.*;
-
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.OutputStandard.OutputStandardResponse;
+import com.example.hcm23_java14_team2.model.response.Syllabus.SyllabusResponse;
 import com.example.hcm23_java14_team2.repository.OutputStandardRepository;
 import com.example.hcm23_java14_team2.repository.SyllabusRepository;
 import com.example.hcm23_java14_team2.service.SyllabusService;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

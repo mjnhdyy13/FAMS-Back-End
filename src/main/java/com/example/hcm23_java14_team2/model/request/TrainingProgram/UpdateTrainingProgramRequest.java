@@ -1,5 +1,7 @@
 package com.example.hcm23_java14_team2.model.request.TrainingProgram;
 
+import java.util.List;
+
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusTrainingProgram;
 
 import lombok.Getter;
@@ -13,5 +15,7 @@ public class UpdateTrainingProgramRequest {
     private String startTime;
     private Integer duration;
     private StatusTrainingProgram status;
-    private Long userId;
+    
+    private Long userModified; //user that modify not create
+    private List<Long> syllabusListId;
 }

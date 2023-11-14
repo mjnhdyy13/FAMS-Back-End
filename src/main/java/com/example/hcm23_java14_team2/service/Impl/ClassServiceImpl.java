@@ -6,7 +6,7 @@ import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.entities.Class;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusClass;
 import com.example.hcm23_java14_team2.model.mapper.ClassMapper;
-import com.example.hcm23_java14_team2.model.response.ClassResponse;
+import com.example.hcm23_java14_team2.model.response.Class.ClassResponse;
 import com.example.hcm23_java14_team2.repository.ClassRepository;
 import com.example.hcm23_java14_team2.service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;

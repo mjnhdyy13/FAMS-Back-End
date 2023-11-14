@@ -2,7 +2,6 @@ package com.example.hcm23_java14_team2.service.Impl;
 
 import java.util.List;
 
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,8 @@ import com.example.hcm23_java14_team2.model.entities.TrainingContent;
 import com.example.hcm23_java14_team2.model.entities.TrainingUnit;
 import com.example.hcm23_java14_team2.model.mapper.TrainingContentMapper;
 import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentRequest;
-import com.example.hcm23_java14_team2.model.response.TrainingContentResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.TrainingContent.TrainingContentResponse;
 import com.example.hcm23_java14_team2.repository.OutputStandardRepository;
 import com.example.hcm23_java14_team2.repository.TrainingContentRepository;
 import com.example.hcm23_java14_team2.repository.TrainingUnitRepository;
@@ -30,8 +30,7 @@ public class TrainingContentServiceImpl implements TrainingContentService {
 
     @Autowired
     private OutputStandardRepository outputStandardRepository;
-
-    @Autowired    
+    
     @Override
     public List<TrainingContent> getAll() {
         List<TrainingContent> trainingContentList = trainingContentRepository.findAll();

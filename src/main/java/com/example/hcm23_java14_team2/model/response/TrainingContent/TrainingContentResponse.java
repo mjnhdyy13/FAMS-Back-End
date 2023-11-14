@@ -1,14 +1,15 @@
-package com.example.hcm23_java14_team2.model.response;
+package com.example.hcm23_java14_team2.model.response.TrainingContent;
 
 import com.example.hcm23_java14_team2.model.entities.Enum.MethodTrainingContent;
 import com.example.hcm23_java14_team2.model.entities.OutputStandard;
 import com.example.hcm23_java14_team2.model.entities.TrainingUnit;
 import com.example.hcm23_java14_team2.model.entities.Enum.DeleveryType;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter @Setter @Builder
 public class TrainingContentResponse {
     private Long id;
     private String nameContent;

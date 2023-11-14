@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.TrainingContentResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.TrainingContent.TrainingContentResponse;
 import com.example.hcm23_java14_team2.service.TrainingContentService;
 
 import jakarta.validation.ValidationException;
