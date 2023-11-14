@@ -6,6 +6,7 @@ import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -48,6 +49,16 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setMessage("INTERNAL_SERVER_ERROR");
         apiResponse.setStatusCode("500");
+        return apiResponse;
+    }
+
+    @ExceptionHandler({ AuthenticationException.class })
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ApiResponse handleApplicationException(Exception  ex) {
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setMessage("UNAUTHORIZED");
+        apiResponse.setStatusCode("401");
         return apiResponse;
     }
 

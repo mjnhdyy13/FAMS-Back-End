@@ -5,8 +5,8 @@ import java.util.List;
 import com.example.hcm23_java14_team2.model.entities.TrainingContent;
 import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentRequest;
 
+import com.example.hcm23_java14_team2.model.request.TrainingContent.TrainingContentUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +39,7 @@ public class TrainingContentController {
         }
     }
 
-    @PostMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id){
         ApiResponse<TrainingContentResponse> response = new ApiResponse<TrainingContentResponse>();
         try {
@@ -68,12 +68,12 @@ public class TrainingContentController {
             throw new ApplicationException(e.getMessage());
         }
     }
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/update")
     public ResponseEntity<?> updateTrainingContent(@RequestParam(value = "id",defaultValue = "") Long id,
-                                                   @RequestBody TrainingContentRequest request) {
+                                                   @RequestBody TrainingContentUpdateRequest request) {
         return new ResponseEntity<>(trainingContentService.updateTrainingContent(id,request),HttpStatus.OK);
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
     public ResponseEntity<?> deleteTrainingContent(@RequestParam(value = "id",defaultValue = "") Long id) {
         return new ResponseEntity<>(trainingContentService.deleteTrainingContent(id),HttpStatus.OK);
     }
