@@ -6,9 +6,12 @@ import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.entities.User;
 import com.example.hcm23_java14_team2.model.entities.UserPermission;
 import com.example.hcm23_java14_team2.model.mapper.UserMapper;
-import com.example.hcm23_java14_team2.model.request.AddUserRequest;
-import com.example.hcm23_java14_team2.model.request.UserRequest;
+import com.example.hcm23_java14_team2.model.request.User.AddUserRequest;
+import com.example.hcm23_java14_team2.model.request.User.UserRequest;
 import com.example.hcm23_java14_team2.model.response.*;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Auth.AuthenticationResponse;
+import com.example.hcm23_java14_team2.model.response.User.UserResponse;
 import com.example.hcm23_java14_team2.repository.UserPermissionRepository;
 import com.example.hcm23_java14_team2.repository.UserRepository;
 import com.example.hcm23_java14_team2.service.UserService;
@@ -36,14 +39,15 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     @Autowired
     UserPermissionRepository userPermissionRepository;
-
-    private  final  UserMapper userMapper;
+    @Autowired
+    private final UserMapper userMapper;
     @Autowired
     private UserValidator userValidator;
     @Autowired
     private ValidatorUtil validatorUtil;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
     @Override
     public PageResponse<List<UserResponse>> getAllUserWithPage(String search, Integer page, Integer size) {
         var PageUser = userRepository.searchByNameWithPage(search,PageRequest.of(page-1,size));

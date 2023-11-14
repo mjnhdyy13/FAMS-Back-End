@@ -4,7 +4,7 @@ package com.example.hcm23_java14_team2.service.Impl;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.model.entities.UserPermission;
 import com.example.hcm23_java14_team2.model.mapper.UserPermissionMapper;
-import com.example.hcm23_java14_team2.model.response.UserPermissionResponse;
+import com.example.hcm23_java14_team2.model.response.UserPermission.UserPermissionResponse;
 import com.example.hcm23_java14_team2.repository.UserPermissionRepository;
 import com.example.hcm23_java14_team2.service.UserPermissionService;
 import lombok.RequiredArgsConstructor;

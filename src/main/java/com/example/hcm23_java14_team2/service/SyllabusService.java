@@ -1,11 +1,12 @@
 package com.example.hcm23_java14_team2.service;
 
 import com.example.hcm23_java14_team2.model.entities.Syllabus;
-import com.example.hcm23_java14_team2.model.request.SyllabusRequest;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
+import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
 import com.example.hcm23_java14_team2.model.response.PageResponse;
-import com.example.hcm23_java14_team2.model.response.SyllabusResponse;
-import com.example.hcm23_java14_team2.model.response.TrainingProgramResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Syllabus.SyllabusResponse;
+import com.example.hcm23_java14_team2.model.response.TrainingProgram.InsertTrainingProgramResponse;
+
 import org.springframework.validation.BindingResult;
 
 import java.util.List;

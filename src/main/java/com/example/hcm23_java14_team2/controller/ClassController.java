@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import com.example.hcm23_java14_team2.exception.ValidationException;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.ClassResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Class.ClassResponse;
 import com.example.hcm23_java14_team2.service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
