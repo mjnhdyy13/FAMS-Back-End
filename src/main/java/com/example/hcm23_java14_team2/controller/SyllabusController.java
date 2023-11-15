@@ -3,18 +3,25 @@ package com.example.hcm23_java14_team2.controller;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
+import com.example.hcm23_java14_team2.helper.ExcelHelper;
 import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Syllabus.ImportMessageResponse;
 import com.example.hcm23_java14_team2.model.response.Syllabus.SyllabusResponse;
 import com.example.hcm23_java14_team2.service.SyllabusService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -88,6 +95,33 @@ public class SyllabusController {
             throw new ApplicationException();
         }
     }
+    @PostMapping(value = "/import", consumes = {"multipart/form-data"})
+    public ResponseEntity<ImportMessageResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+        String message = "";
 
+        if (ExcelHelper.hasExcelFormat(file)) {
+            try {
+                syllabusService.importFile(file);
+
+                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(new ImportMessageResponse(message));
+            } catch (Exception e) {
+                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ImportMessageResponse(message));
+            }
+        }
+
+        message = "Please upload an excel file!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ImportMessageResponse(message));
+    }
+    @GetMapping("/download")
+    public ResponseEntity<Resource> getFile() {
+        String filename = "syllabus.xlsx";
+        InputStreamResource file = new InputStreamResource(syllabusService.load());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(file);
+    }
 
 }

@@ -3,6 +3,7 @@ package com.example.hcm23_java14_team2.service.Impl;
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
+import com.example.hcm23_java14_team2.helper.ExcelHelper;
 import com.example.hcm23_java14_team2.model.entities.Enum.Level;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusSyllabus;
 import com.example.hcm23_java14_team2.model.entities.OutputStandard;
@@ -20,10 +21,15 @@ import com.example.hcm23_java14_team2.service.SyllabusService;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -178,5 +184,24 @@ public class SyllabusServiceImpl implements SyllabusService {
         syllabusRepository.save(syllabus);
         return "Xóa thành công";
     }
-
+    public void importFile(MultipartFile file) {
+        try {
+            List<Syllabus> syllabusList = ExcelHelper.excelToTutorials(file.getInputStream());
+            for (Syllabus syllabus : syllabusList) {
+                ExampleMatcher matcher = ExampleMatcher.matching()
+                        .withIgnorePaths("id");
+                Example<Syllabus> syllabusExample = Example.of(syllabus, matcher);
+                if (!syllabusRepository.exists(syllabusExample)) {
+                    syllabusRepository.save(syllabus);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("fail to store excel data: " + e.getMessage());
+        }
+    }
+    public ByteArrayInputStream load() {
+        List<Syllabus> syllabusList = syllabusRepository.findAll();
+        ByteArrayInputStream in = ExcelHelper.tutorialsToExcel(syllabusList);
+        return in;
+    }
 }
