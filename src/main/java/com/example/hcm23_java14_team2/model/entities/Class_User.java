@@ -13,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "class_user")
+@Builder
 public class Class_User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

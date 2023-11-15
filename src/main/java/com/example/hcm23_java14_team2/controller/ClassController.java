@@ -2,11 +2,15 @@ package com.example.hcm23_java14_team2.controller;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
-import com.example.hcm23_java14_team2.exception.ValidationException;
-import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.Class.ClassDetailResponse;
-import com.example.hcm23_java14_team2.model.response.Class.ClassResponse;
+import com.example.hcm23_java14_team2.model.entities.Class_User;
+import com.example.hcm23_java14_team2.model.request.Class.ClassRequest;
+import com.example.hcm23_java14_team2.model.request.Class.ClassSearchRequest;
+import com.example.hcm23_java14_team2.model.request.Training_SyllabusRequest;
+import com.example.hcm23_java14_team2.model.response.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.ClassDetailResponse;
+import com.example.hcm23_java14_team2.model.response.ClassResponse;
 import com.example.hcm23_java14_team2.service.ClassService;
+import com.example.hcm23_java14_team2.service.ClassUserService;
 import com.example.hcm23_java14_team2.service.TrainingSyllabusService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,10 @@ public class ClassController {
         }catch (Exception e){
             throw new ApplicationException();
         }
+    @Autowired
+    private ClassUserService classUserService;
+    public ClassController(ClassService classService) {
+        this.classService = classService;
     }
 
     @PatchMapping("/update/{id}")
@@ -74,7 +82,7 @@ public class ClassController {
             throw new ApplicationException();
         }
     }
-    
+
     @DeleteMapping(value = {"delete/{id}"})
     public ResponseEntity<?> deleteTraining(@PathVariable Long id) {
         try {
@@ -113,5 +121,25 @@ public class ClassController {
             throw new ApplicationException(); // Handle other exceptions
         }
 
+    }
+    @PostMapping("{id}/addUser")
+    public ResponseEntity<?> addClassUser(@PathVariable Long id, @Valid @RequestBody List<Long> idUser){
+        try{
+            return new ResponseEntity<>(classUserService.addUserClass(id,idUser), HttpStatus.OK);
+        } catch (NotFoundException ex) {
+            throw ex; // Rethrow NotFoundException
+        } catch (Exception ex) {
+            throw new ApplicationException(); // Handle other exceptions
+        }
+    }
+    @DeleteMapping("{id}/deleteUser")
+    public ResponseEntity<?> deleteClassUser(@PathVariable Long id, @Valid @RequestBody List<Long> idUser){
+        try{
+            return new ResponseEntity<>(classUserService.deleteUserClass(id,idUser), HttpStatus.OK);
+        } catch (NotFoundException ex) {
+            throw ex; // Rethrow NotFoundException
+        } catch (Exception ex) {
+            throw new ApplicationException(); // Handle other exceptions
+        }
     }
 }
