@@ -2,13 +2,9 @@ package com.example.hcm23_java14_team2.controller;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
+import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.entities.Class_User;
-import com.example.hcm23_java14_team2.model.request.Class.ClassRequest;
-import com.example.hcm23_java14_team2.model.request.Class.ClassSearchRequest;
-import com.example.hcm23_java14_team2.model.request.Training_SyllabusRequest;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
-import com.example.hcm23_java14_team2.model.response.ClassDetailResponse;
-import com.example.hcm23_java14_team2.model.response.ClassResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.service.ClassService;
 import com.example.hcm23_java14_team2.service.ClassUserService;
 import com.example.hcm23_java14_team2.service.TrainingSyllabusService;
@@ -33,22 +29,22 @@ public class ClassController {
     private ClassService classService;
     @Autowired
     private TrainingSyllabusService trainingSyllabusService;
-
-    @GetMapping("/list")
-    public ResponseEntity<?> getAllClasses(@RequestParam(value = "search",defaultValue = "") String search,
-                                @RequestParam(value = "page",required = false) Integer page,
-                                @RequestParam(value = "size",defaultValue = "2") Integer size) {
-        try{
-            if(page!= null)
-                return new ResponseEntity<>(classService.getAllClassesWithPage(search,page,size),HttpStatus.OK);
-            return new ResponseEntity<>(classService.getAllClasses(search),HttpStatus.OK);
-        }catch (Exception e){
-            throw new ApplicationException();
-        }
     @Autowired
     private ClassUserService classUserService;
     public ClassController(ClassService classService) {
         this.classService = classService;
+    }
+    @GetMapping("/list")
+    public ResponseEntity<?> getAllClasses(@RequestParam(value = "search",defaultValue = "") String search,
+                                @RequestParam(value = "page",required = false) Integer page,
+                                @RequestParam(value = "size",defaultValue = "2") Integer size) {
+        try {
+            if (page != null)
+                return new ResponseEntity<>(classService.getAllClassesWithPage(search, page, size), HttpStatus.OK);
+            return new ResponseEntity<>(classService.getAllClasses(search), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ApplicationException();
+        }
     }
 
     @PatchMapping("/update/{id}")

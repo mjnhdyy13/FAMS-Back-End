@@ -4,7 +4,7 @@ import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.model.entities.*;
 import com.example.hcm23_java14_team2.model.entities.Class;
-import com.example.hcm23_java14_team2.model.response.ApiResponse;
+import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.repository.ClassRepository;
 import com.example.hcm23_java14_team2.repository.ClassUserRepository;
 import com.example.hcm23_java14_team2.repository.UserRepository;

@@ -1,6 +1,6 @@
 my_mysql_db_config:
   username: root
-  password:
+  password: Vuhuy0209@
   host: 127.0.0.1 
   port: 3306
   schema: fams
