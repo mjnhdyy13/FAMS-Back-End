@@ -57,8 +57,8 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ApiResponse handleApplicationException(Exception  ex) {
         ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setMessage("UNAUTHORIZED");
-        apiResponse.setStatusCode("401");
+        apiResponse.setMessage(ex.getMessage());
+        apiResponse.setStatusCode(HttpStatus.UNAUTHORIZED.toString());
         return apiResponse;
     }
 
