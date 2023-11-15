@@ -24,9 +24,8 @@ public class TrainingProgramResponse {
     private Integer duration;
     private String startTime;
     private StatusTrainingProgram status;
-
-    private String userNameCreate;
-    private Long userId;
+    private String CreateBy;
+    private String CreateOn;
 
     private List<Syllabus> syllabusList;
 }
