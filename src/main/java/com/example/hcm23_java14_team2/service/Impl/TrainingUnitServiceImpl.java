@@ -108,6 +108,9 @@ public class TrainingUnitServiceImpl implements TrainingUnitService {
                     .syllabus(syllabusRepository.findById(syllabus_id).get())
                     .build();
             daySyllabusRepository.save(day);
+            var syllabus = syllabusRepository.findById(syllabus_id).get();
+            syllabus.setDuration(syllabus.getDuration()+1);
+            syllabusRepository.save(syllabus);
             var data = fetch(syllabus_id);
             return ApiResponse.builder()
                     .statusCode("200")
@@ -171,6 +174,11 @@ public class TrainingUnitServiceImpl implements TrainingUnitService {
             List<TrainingUnit> trainingUnitList = trainingUnitRepository.findAllByDayId(daySyllabus.getId());
             trainingUnitRepository.deleteAll(trainingUnitList);
             daySyllabusRepository.delete(daySyllabus);
+            var syllabus = syllabusRepository.findById(syllabus_id).get();
+            if(syllabus.getDuration()>0) {
+                syllabus.setDuration(syllabus.getDuration()-1);
+            }
+            syllabusRepository.save(syllabus);
             var data = fetch(syllabus_id);
             return ApiResponse.builder()
                         .statusCode("200")

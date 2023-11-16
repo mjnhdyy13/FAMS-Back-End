@@ -2,10 +2,7 @@ package com.example.hcm23_java14_team2.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
@@ -13,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "class_user")
+@Builder
 public class Class_User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
