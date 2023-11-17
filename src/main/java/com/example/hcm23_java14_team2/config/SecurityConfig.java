@@ -47,15 +47,33 @@ public class SecurityConfig {
                         "/webjars/**",
                         "/swagger-ui.html").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
+                //syllabus
                 .requestMatchers(HttpMethod.GET, "/api/v1/syllabus/**").hasAnyAuthority("VIEW_SYLLABUS", "FULLACCESS_SYLLABUS")
                 .requestMatchers(HttpMethod.POST, "/api/v1/syllabus/**").hasAnyAuthority("CREATE_SYLLABUS", "FULLACCESS_SYLLABUS")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/syllabus/**").hasAnyAuthority("MODIFY_SYLLABUS", "FULLACCESS_SYLLABUS")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/syllabus/**").hasAnyAuthority("MODIFY_SYLLABUS", "FULLACCESS_SYLLABUS")
+                //user
                 .requestMatchers(HttpMethod.GET, "/api/v1/user/**").hasAnyAuthority("VIEW_USER", "FULLACCESS_USER")
                 .requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasAnyAuthority("CREATE_USER", "FULLACCESS_USER")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/user/**").hasAnyAuthority("MODIFY_USER", "FULLACCESS_USER")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/user/**").hasAnyAuthority("MODIFY_USER", "FULLACCESS_USER")
+                //training program
                 .requestMatchers(HttpMethod.GET, "/api/v1/trainingProgram/**").hasAnyAuthority("VIEW_TRAINING", "FULLACCESS_TRAINING")
                 .requestMatchers(HttpMethod.POST, "/api/v1/trainingProgram/**").hasAnyAuthority("CREATE_TRAINING", "FULLACCESS_TRAINING")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/trainingProgram/**").hasAnyAuthority("MODIFY_TRAINING", "FULLACCESS_TRAINING")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/trainingProgram/**").hasAnyAuthority("MODIFY_TRAINING", "FULLACCESS_TRAINING")
+                //class
+                .requestMatchers(HttpMethod.POST, "/api/v1/class/**").hasAnyAuthority("CREATE_CLASS", "FULLACCESS_CLASS")
+                .requestMatchers(HttpMethod.GET, "/api/v1/class/**").hasAnyAuthority("VIEW_CLASS", "FULLACCESS_CLASS")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/class/**").hasAnyAuthority("MODIFY_CLASS", "FULLACCESS_CLASS")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/class/**").hasAnyAuthority("MODIFY_CLASS", "FULLACCESS_CLASS")
+                //unit
+                .requestMatchers(HttpMethod.POST, "/api/v1/training-unit/**").hasAnyAuthority("CREATE_UNIT", "FULLACCESS_UNIT")
+                .requestMatchers(HttpMethod.GET, "/api/v1/training-unit/**").hasAnyAuthority("VIEW_UNIT", "FULLACCESS_UNIT")
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/training-unit/**").hasAnyAuthority("MODIFY_UNIT", "FULLACCESS_UNIT")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/training-unit/**").hasAnyAuthority("MODIFY_UNIT", "FULLACCESS_UNIT")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/training-unit/**").hasAnyAuthority( "FULLACCESS_UNIT")
+                //
                 .requestMatchers("/api/v1/user-permission/**").authenticated()
                 .requestMatchers("/api/v1/syllabus/**").authenticated()
                 .anyRequest()
