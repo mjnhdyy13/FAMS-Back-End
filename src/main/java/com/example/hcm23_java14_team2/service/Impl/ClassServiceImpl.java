@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -126,9 +127,9 @@ public class ClassServiceImpl implements ClassService {
     private ClassDetailResponse convertToDTO(Class classDetail) {
         ClassDetailResponse classDetailResponse = new ClassDetailResponse();
         classDetailResponse.setCreateBy(classDetail.getCreateBy());
-        classDetailResponse.setCreateDate(String.valueOf(classDetail.getCreateDate()));
+        classDetailResponse.setCreateDate(formatter.format(classDetail.getCreateDate()));
         classDetailResponse.setModifiedBy(classDetail.getModifiedBy());
-        classDetailResponse.setModifiedDate(String.valueOf(classDetail.getModifiedDate()));
+        classDetailResponse.setModifiedDate(formatter.format(classDetail.getModifiedDate()));
         classDetailResponse.setClassName(classDetail.getClassName());
         classDetailResponse.setClassCode(classDetail.getClassCode());
         classDetailResponse.setAttendee(classDetail.getAttendee());
@@ -210,13 +211,15 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public ApiResponse<Object> getAllClasses(String search) {
-        var classList = classRepository.searchByName(search);
-        List<ClassResponse> classResponses = classMapper.toResponselist(classList);
+        var classes = classRepository.searchByName(search);
+        List<ClassResponse> classResponses = new ArrayList<>();
 
-        for (var item: classResponses){
-            item.setCreateDate(formatter.format(item.getCreateDate()));
-            item.setModifiedDate(formatter.format(item.getModifiedDate()));
-        }
+        for (var item: classes){
+            ClassResponse response = classMapper.toResponse(item);
+            response.setCreateDate(formatter.format(item.getCreateDate()));
+            response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            classResponses.add(response);
+        }  
         
         PageResponse<Object> apiResponse = new PageResponse<>();
         apiResponse.ok(classResponses);
@@ -226,12 +229,15 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public PageResponse<Object> getAllClassesWithPage(String searchName, Integer page, Integer size) {
         var PageClass = classRepository.searchByClassName(searchName, PageRequest.of(page-1,size));
-        List<ClassResponse> classResponses = classMapper.toResponselist(PageClass.getContent());
+        List<Class> classes = PageClass.getContent(); 
+        List<ClassResponse> classResponses = new ArrayList<>();
 
-        for (var item: classResponses){
-            item.setCreateDate(formatter.format(item.getCreateDate()));
-            item.setModifiedDate(formatter.format(item.getModifiedDate()));
-        }
+        for (var item: classes){
+            ClassResponse response = classMapper.toResponse(item);
+            response.setCreateDate(formatter.format(item.getCreateDate()));
+            response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            classResponses.add(response);
+        }   
         
         PageResponse<Object> pageResponse = new PageResponse<>();
         pageResponse.ok(classResponses);
