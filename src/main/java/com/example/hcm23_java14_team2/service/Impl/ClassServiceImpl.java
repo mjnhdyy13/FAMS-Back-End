@@ -18,20 +18,21 @@ import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.handler.GlobalExceptionHandler;
 import com.example.hcm23_java14_team2.model.mapper.ClassMapper;
 
-import com.example.hcm23_java14_team2.repository.ClassRepository;
-import com.example.hcm23_java14_team2.repository.SyllabusRepository;
-import com.example.hcm23_java14_team2.repository.TrainingProgramRepository;
-import com.example.hcm23_java14_team2.repository.Training_SyllabusRepository;
+import com.example.hcm23_java14_team2.repository.*;
 import com.example.hcm23_java14_team2.service.ClassService;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,8 @@ import java.util.stream.Collectors;
 public class ClassServiceImpl implements ClassService {
     @Autowired
     ClassRepository classRepository;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     Training_SyllabusRepository trainingSyllabusRepository;
     @Autowired
@@ -58,6 +61,12 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ApiResponse<Object> updateClass(Long id, ClassUpdateRequest classRequest, BindingResult bindingResult) {
         try {
+            //get account user
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+            String fullName = userDetails.getUsername();
+            User user = userRepository.findByGmail(fullName);
+
             Class existingClass = classRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Class Not Found"));
 
@@ -82,7 +91,7 @@ public class ClassServiceImpl implements ClassService {
                 existingClass.setDuration(classRequest.getDuration());
                 existingClass.setAttendee(classRequest.getAttendee());
                 existingClass.setFSU(classRequest.getFSU());
-                existingClass.setModifiedBy(classRequest.getModifiedBy());
+                existingClass.setModifiedBy(user.getName());
                 existingClass.setModifiedDate(date);
                 existingClass.setTrainingProgram(existingtrainingProgram);
                 if (classRequest.getStatus() != null) {
@@ -137,17 +146,21 @@ public class ClassServiceImpl implements ClassService {
         classDetailResponse.setEndTime(classDetail.getEndTime());
         classDetailResponse.setLocation(classDetail.getLocation());
         classDetailResponse.setFsu(classDetail.getFSU());
+        List<String> trainers = new ArrayList<>();
+        List<String> admins = new ArrayList<>();
         for (Class_User cu : classDetail.getClassUserList()) {
             User user = cu.getUser();
             Role role = user.getUserPermission().getRoleName();
             if (role == Role.TRAINER) {
                 // this is the trainer
-                classDetailResponse.setTrainerName(user.getName());
+                trainers.add(user.getName());
             } else if (role == Role.CLASSADMIN) {
                 // this is the admin
-                classDetailResponse.setAdminName(user.getName());
+                admins.add(user.getName());
             }
         }
+        classDetailResponse.setTrainerName(trainers);
+        classDetailResponse.setAdminName(admins);
 
         TrainingProgram trainingProgram = classDetail.getTrainingProgram();
         if (trainingProgram != null) {

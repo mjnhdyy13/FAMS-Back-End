@@ -6,6 +6,8 @@ import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ClassDetailResponse {
@@ -21,7 +23,7 @@ public class ClassDetailResponse {
     private String location;
     private String fsu;
     private AttendeeClass attendee;
-    private String trainerName;
-    private String adminName;
+    private List<String> trainerName;
+    private List<String> adminName;
     private TrainingProgramViewClassResponse trainingProgram;
 }
