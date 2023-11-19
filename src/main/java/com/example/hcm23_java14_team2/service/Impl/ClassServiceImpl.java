@@ -74,7 +74,7 @@ public class ClassServiceImpl implements ClassService {
                     .orElseThrow(() -> new NotFoundException("TrainingProgram Not Found"));
 
             Date date = new Date();
-            if (existingClass.getStatus() == null || (!existingClass.getStatus().toString().equals("PLANNING") && !existingClass.getStatus().toString().equals("SCHEDULED"))) {
+            if (existingClass.getStatus() == null || (existingClass.getStatus() != StatusClass.PLANNING && existingClass.getStatus() != StatusClass.SCHEDULED)) {
                 throw new NotFoundException("Class can't be edit!");
             } else {
                 if (bindingResult.hasErrors()) {
@@ -90,6 +90,7 @@ public class ClassServiceImpl implements ClassService {
                 existingClass.setLocation(classRequest.getLocation());
                 existingClass.setDuration(classRequest.getDuration());
                 existingClass.setAttendee(classRequest.getAttendee());
+                existingClass.setStatus(classRequest.getStatus());
                 existingClass.setFSU(classRequest.getFSU());
                 existingClass.setModifiedBy(user.getName());
                 existingClass.setModifiedDate(date);
