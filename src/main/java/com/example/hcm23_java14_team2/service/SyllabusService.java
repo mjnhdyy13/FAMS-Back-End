@@ -22,6 +22,6 @@ public interface SyllabusService {
     ApiResponse<Object> insertSyllabus(SyllabusRequest request);
     String deleteSyllabus(Long id);
     void importFile(MultipartFile file);
-    ByteArrayInputStream load();
+    ByteArrayInputStream load(Long id);
 }
 

@@ -23,7 +23,6 @@ public class ClassResponse {
     private String startDate;
     private String endDate;
     private AttendeeClass attendee;
-
     private String createBy;
     private String createDate;
     private String modifiedBy;

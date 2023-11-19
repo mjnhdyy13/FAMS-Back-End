@@ -10,7 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ClassUpdateRequest {
-    private Long id;
     private String className;
     private String classCode;
     private Integer duration;
@@ -22,6 +21,5 @@ public class ClassUpdateRequest {
     private String startTime;
     private String endTime;
     private AttendeeClass attendee;
-    private String modifiedBy;
     private Integer TrainingProgramId;
 }
