@@ -120,7 +120,7 @@ public class ExcelHelper {
             throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
         }
     }
-    public static ByteArrayInputStream tutorialsToExcel(List<Syllabus> syllabusList) {
+    public static ByteArrayInputStream tutorialsToExcel(Syllabus syllabus) {
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
             Sheet sheet = workbook.createSheet(SHEET);
@@ -134,24 +134,22 @@ public class ExcelHelper {
             }
 
             int rowIdx = 1;
-            for (Syllabus syllabus : syllabusList) {
-                Row row = sheet.createRow(rowIdx++);
+            Row row = sheet.createRow(rowIdx);
 
-                row.createCell(0).setCellValue(syllabus.getId());
-                row.createCell(1).setCellValue(syllabus.getCodeName());
-                row.createCell(2).setCellValue(syllabus.getTopicName());
-                row.createCell(3).setCellValue(syllabus.getVersion());
-                row.createCell(4).setCellValue(syllabus.getPrinciple());
-                row.createCell(5).setCellValue(syllabus.getCourseObjective());
-                row.createCell(6).setCellValue(syllabus.getDuration());
-                row.createCell(7).setCellValue(syllabus.getTechnicalReq());
-                row.createCell(8).setCellValue(String.valueOf(syllabus.getStatus()));
-                row.createCell(9).setCellValue(String.valueOf(syllabus.getLevel()));
-                row.createCell(10).setCellValue(syllabus.getCreateBy());
-                row.createCell(11).setCellValue(String.valueOf(syllabus.getCreateDate()));
-                row.createCell(12).setCellValue(syllabus.getModifiedBy());
-                row.createCell(13).setCellValue(String.valueOf(syllabus.getModifiedDate()));
-            }
+            row.createCell(0).setCellValue(syllabus.getId());
+            row.createCell(1).setCellValue(syllabus.getCodeName());
+            row.createCell(2).setCellValue(syllabus.getTopicName());
+            row.createCell(3).setCellValue(syllabus.getVersion());
+            row.createCell(4).setCellValue(syllabus.getPrinciple());
+            row.createCell(5).setCellValue(syllabus.getCourseObjective());
+            row.createCell(6).setCellValue(syllabus.getDuration());
+            row.createCell(7).setCellValue(syllabus.getTechnicalReq());
+            row.createCell(8).setCellValue(String.valueOf(syllabus.getStatus()));
+            row.createCell(9).setCellValue(String.valueOf(syllabus.getLevel()));
+            row.createCell(10).setCellValue(syllabus.getCreateBy());
+            row.createCell(11).setCellValue(String.valueOf(syllabus.getCreateDate()));
+            row.createCell(12).setCellValue(syllabus.getModifiedBy());
+            row.createCell(13).setCellValue(String.valueOf(syllabus.getModifiedDate()));
 
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());

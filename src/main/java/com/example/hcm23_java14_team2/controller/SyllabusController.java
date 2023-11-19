@@ -114,10 +114,10 @@ public class SyllabusController {
         message = "Please upload an excel file!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ImportMessageResponse(message));
     }
-    @GetMapping("/download")
-    public ResponseEntity<Resource> getFile() {
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> getFile(@PathVariable  Long id) {
         String filename = "syllabus.xlsx";
-        InputStreamResource file = new InputStreamResource(syllabusService.load());
+        InputStreamResource file = new InputStreamResource(syllabusService.load(id));
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
