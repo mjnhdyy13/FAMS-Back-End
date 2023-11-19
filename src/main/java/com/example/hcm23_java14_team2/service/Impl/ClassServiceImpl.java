@@ -226,13 +226,15 @@ public class ClassServiceImpl implements ClassService {
     }
     @Override
     public ApiResponse<Object> getAllClasses(String search) {
-        var classList = classRepository.searchByName(search);
-        List<ClassResponse> classResponses = classMapper.toResponselist(classList);
+        var classes = classRepository.searchByName(search);
+        List<ClassResponse> classResponses = new ArrayList<>();
 
-        for (var item: classResponses){
-            item.setCreateDate(formatter.format(item.getCreateDate()));
-            item.setModifiedDate(formatter.format(item.getModifiedDate()));
-        }
+        for (var item: classes){
+            ClassResponse response = classMapper.toResponse(item);
+            response.setCreateDate(formatter.format(item.getCreateDate()));
+            response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            classResponses.add(response);
+        }  
         
         PageResponse<Object> apiResponse = new PageResponse<>();
         apiResponse.ok(classResponses);
@@ -242,11 +244,16 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public PageResponse<Object> getAllClassesWithPage(String searchName, Integer page, Integer size) {
         var PageClass = classRepository.searchByClassName(searchName, PageRequest.of(page-1,size));
-        List<ClassResponse> classResponses = classMapper.toResponselist(PageClass.getContent());
-        for (var item: classResponses){
-            item.setCreateDate(formatter.format(item.getCreateDate()));
-            item.setModifiedDate(formatter.format(item.getModifiedDate()));
-        }
+        List<Class> classes = PageClass.getContent(); 
+        List<ClassResponse> classResponses = new ArrayList<>();
+
+        for (var item: classes){
+            ClassResponse response = classMapper.toResponse(item);
+            response.setCreateDate(formatter.format(item.getCreateDate()));
+            response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            classResponses.add(response);
+        }   
+        
         PageResponse<Object> pageResponse = new PageResponse<>();
         pageResponse.ok(classResponses);
         double total = Math.ceil((double)PageClass.getTotalElements() / size);
