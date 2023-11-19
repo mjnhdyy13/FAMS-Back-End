@@ -1,11 +1,6 @@
 my_mysql_db_config:
-<<<<<<< HEAD
   username: ToanMySql
   password: Pentakills5
-=======
-  username: root
-  password: Vuhuy0209@
->>>>>>> 0a84e51bb7b87037354a27b5b4e2a59bae35ba0d
   host: 127.0.0.1 
   port: 3306
   schema: fams

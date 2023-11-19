@@ -244,7 +244,6 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public PageResponse<Object> getAllClassesWithPage(String searchName, Integer page, Integer size) {
         var PageClass = classRepository.searchByClassName(searchName, PageRequest.of(page-1,size));
-<<<<<<< HEAD
         List<Class> classes = PageClass.getContent(); 
         List<ClassResponse> classResponses = new ArrayList<>();
 
@@ -255,13 +254,6 @@ public class ClassServiceImpl implements ClassService {
             classResponses.add(response);
         }   
         
-=======
-        List<ClassResponse> classResponses = classMapper.toResponselist(PageClass.getContent());
-        for (var item: classResponses){
-            item.setCreateDate(formatter.format(item.getCreateDate()));
-            item.setModifiedDate(formatter.format(item.getModifiedDate()));
-        }
->>>>>>> 0a84e51bb7b87037354a27b5b4e2a59bae35ba0d
         PageResponse<Object> pageResponse = new PageResponse<>();
         pageResponse.ok(classResponses);
         double total = Math.ceil((double)PageClass.getTotalElements() / size);
