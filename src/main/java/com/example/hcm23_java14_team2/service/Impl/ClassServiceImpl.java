@@ -125,10 +125,11 @@ public class ClassServiceImpl implements ClassService {
 
     private ClassDetailResponse convertToDTO(Class classDetail) {
         ClassDetailResponse classDetailResponse = new ClassDetailResponse();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         classDetailResponse.setCreateBy(classDetail.getCreateBy());
-        classDetailResponse.setCreateDate(String.valueOf(classDetail.getCreateDate()));
+        classDetailResponse.setCreateDate(formatter.format(classDetail.getCreateDate()));
         classDetailResponse.setModifiedBy(classDetail.getModifiedBy());
-        classDetailResponse.setModifiedDate(String.valueOf(classDetail.getModifiedDate()));
+        classDetailResponse.setModifiedDate(formatter.format(classDetail.getModifiedDate()));
         classDetailResponse.setClassName(classDetail.getClassName());
         classDetailResponse.setClassCode(classDetail.getClassCode());
         classDetailResponse.setAttendee(classDetail.getAttendee());
@@ -159,10 +160,11 @@ public class ClassServiceImpl implements ClassService {
 
     private TrainingProgramViewClassResponse convertTrainingProgramToDTO(TrainingProgram trainingProgram) {
         TrainingProgramViewClassResponse trainingProgramViewClassResponse = new TrainingProgramViewClassResponse();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         trainingProgramViewClassResponse.setName(trainingProgram.getName());
         trainingProgramViewClassResponse.setDuration(trainingProgram.getDuration());
         trainingProgramViewClassResponse.setModifiedBy(trainingProgram.getModifiedBy());
-        trainingProgramViewClassResponse.setModifiedDate(String.valueOf(trainingProgram.getModifiedDate()));
+        trainingProgramViewClassResponse.setModifiedDate(formatter.format(trainingProgram.getModifiedDate()));
         List<SyllabusViewClassResponse> syllabusViewClassResponses = trainingProgram.getTraining_syllabusList().stream()
                 .map(Training_Syllabus::getSyllabus)
                 .map(this::convertSyllabusToDTO)
@@ -175,12 +177,13 @@ public class ClassServiceImpl implements ClassService {
 
     private SyllabusViewClassResponse convertSyllabusToDTO(Syllabus syllabus) {
         SyllabusViewClassResponse syllabusViewClassResponse = new SyllabusViewClassResponse();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         syllabusViewClassResponse.setTopicName(syllabus.getTopicName());
         syllabusViewClassResponse.setCodeName(syllabus.getCodeName());
         syllabusViewClassResponse.setVersion(syllabus.getVersion());
         syllabusViewClassResponse.setStatus(syllabus.getStatus());
         syllabusViewClassResponse.setCreateBy(syllabus.getCreateBy());
-        syllabusViewClassResponse.setCreateDate(String.valueOf(syllabus.getCreateDate()));
+        syllabusViewClassResponse.setCreateDate(formatter.format(syllabus.getCreateDate()));
         // set other fields from syllabus to syllabusDTO
         return syllabusViewClassResponse;
     }
@@ -207,7 +210,6 @@ public class ClassServiceImpl implements ClassService {
             throw ex;
         }
     }
-
     @Override
     public ApiResponse<Object> getAllClasses(String search) {
         var classList = classRepository.searchByName(search);
@@ -227,12 +229,10 @@ public class ClassServiceImpl implements ClassService {
     public PageResponse<Object> getAllClassesWithPage(String searchName, Integer page, Integer size) {
         var PageClass = classRepository.searchByClassName(searchName, PageRequest.of(page-1,size));
         List<ClassResponse> classResponses = classMapper.toResponselist(PageClass.getContent());
-
         for (var item: classResponses){
             item.setCreateDate(formatter.format(item.getCreateDate()));
             item.setModifiedDate(formatter.format(item.getModifiedDate()));
         }
-        
         PageResponse<Object> pageResponse = new PageResponse<>();
         pageResponse.ok(classResponses);
         double total = Math.ceil((double)PageClass.getTotalElements() / size);
