@@ -18,6 +18,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
@@ -143,6 +146,12 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional
     public ApiResponse<UpdateTrainingProgramResponse> updateTrainingProgram(Integer id, UpdateTrainingProgramRequest trainingProgramRequest, BindingResult bindingResult) {
         ApiResponse<UpdateTrainingProgramResponse> apiResponse = new ApiResponse<>();
+
+        //get account user
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String fullName = userDetails.getUsername();
+
         try {
             //checking trainingprogram id
             TrainingProgram existingTrainingProgram = trainingProgramRepository.findById(id)
@@ -173,10 +182,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
             if (trainingProgramRequest.getStatus() != null) {
                 existingTrainingProgram.setStatus(trainingProgramRequest.getStatus());
             }
-            if (trainingProgramRequest.getUserModified() != null) {
-                String userName = userRepository.findById(trainingProgramRequest.getUserModified()).orElse(null).getName();
-                existingTrainingProgram.setModifiedBy(userName);
-            }
+            existingTrainingProgram.setModifiedBy(fullName);
 
             existingTrainingProgram.setModifiedDate(new Date());
 
@@ -186,7 +192,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
             
             UpdateTrainingProgramResponse trainingProgramResponse = trainingProgramMapper.toUpdateResponse(existingTrainingProgram);
             trainingProgramResponse.setSyllabusList(getSyllabusList(existingTrainingProgram));
-            trainingProgramResponse.setModifiedDate(formatter.format(new Date()));
+            trainingProgramResponse.setModifiedDate(formatter.format(existingTrainingProgram.getModifiedDate()));
+            trainingProgramResponse.setCreateDate(formatter.format(existingTrainingProgram.getCreateDate()));
             apiResponse.ok(trainingProgramResponse);
             return apiResponse;
         } catch (ApplicationException ex) {
@@ -197,23 +204,28 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Override
     public ApiResponse<Object> insertTrainingProgram(InsertTrainingProgramRequest trainingProgramRequest) {
         ApiResponse<Object> apiResponse = new ApiResponse<>();
+
+        //get account user
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String fullName = userDetails.getUsername();
+        User user = userRepository.findByGmail(fullName);
         try{
             List<Training_Syllabus> listTraining_Syllabus = new ArrayList<>();
 
-            User userCreate = userRepository.findById(trainingProgramRequest.getCreateBy()).orElse(null);
             TrainingProgram trainingProgram = TrainingProgram.builder()
                 .name(trainingProgramRequest.getName())
                 .status(StatusTrainingProgram.DRAFT)
                 .code(trainingProgramRequest.getCode())
                 .startTime(trainingProgramRequest.getStartTime())
                 .duration(trainingProgramRequest.getDuration())
-                .user(userCreate)
+                .user(user)
                 .build();
 
             
             trainingProgram.setCreateDate(new Date());
-            trainingProgram.setCreateBy(userCreate.getName());
-            trainingProgram.setModifiedBy(userCreate.getName());
+            trainingProgram.setCreateBy(user.getName());
+            trainingProgram.setModifiedBy(user.getName());
             trainingProgram.setModifiedDate(new Date());
 
             for (Long item: trainingProgramRequest.getSyllabusListId()){

@@ -32,6 +32,5 @@ public class UserPermissionServiceImpl implements UserPermissionService {
         if(userPermission == null) {throw  new NotFoundException("");}
         return  userPermissionMapper.toResponse(userPermissionRepository.findById(id).get());
     }
-
-
 }
+
