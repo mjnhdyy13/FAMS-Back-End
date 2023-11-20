@@ -103,9 +103,9 @@ public class ClassServiceImpl implements ClassService {
 
             ApiResponse<Object> apiResponse = new ApiResponse<>();
             ClassResponse classResponse = classMapper.toResponse(existingClass);
-            classResponse.setModifiedDate(formatter.format(date));
+            classResponse.setModifiedDate(formatter.format(new Date()));
             classResponse.setCreateDate(formatter.format(existingClass.getCreateDate()));
-            apiResponse.ok(classMapper.toResponse(existingClass));
+            apiResponse.ok(classResponse);
             return apiResponse;
         } catch (ApplicationException ex) {
             throw ex;
