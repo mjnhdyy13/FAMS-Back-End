@@ -16,6 +16,7 @@ import com.example.hcm23_java14_team2.model.response.*;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.OutputStandard.OutputStandardResponse;
 import com.example.hcm23_java14_team2.model.response.Syllabus.SyllabusResponse;
+import com.example.hcm23_java14_team2.model.response.Syllabus.UpdateSyllabusResponse;
 import com.example.hcm23_java14_team2.repository.OutputStandardRepository;
 import com.example.hcm23_java14_team2.repository.SyllabusRepository;
 import com.example.hcm23_java14_team2.repository.UserRepository;
@@ -125,7 +126,7 @@ public class SyllabusServiceImpl implements SyllabusService {
 
     @Transactional
     @Override
-    public SyllabusResponse updateSyllabus(Long id, SyllabusRequest syllabusRequest, BindingResult bindingResult) {
+    public UpdateSyllabusResponse updateSyllabus(Long id, SyllabusRequest syllabusRequest, BindingResult bindingResult) {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Syllabus existingSyllabus = syllabusRepository.findById(id)
@@ -168,9 +169,9 @@ public class SyllabusServiceImpl implements SyllabusService {
             existingSyllabus.setModifiedBy(user.getName());
             Date date = new Date();
             existingSyllabus.setModifiedDate(date);
-            SyllabusResponse syllabusResponse = SyllabusResponse.builder().build();;
+            UpdateSyllabusResponse syllabusResponse = UpdateSyllabusResponse.builder().build();;
             BeanUtils.copyProperties(existingSyllabus, syllabusResponse);
-            syllabusResponse.setCreateDate(formatter.format(existingSyllabus.getCreateDate()));
+            syllabusResponse.setModifiedDate(formatter.format(existingSyllabus.getModifiedDate()));
             return syllabusResponse;
         } catch (ApplicationException ex) {
             throw ex;

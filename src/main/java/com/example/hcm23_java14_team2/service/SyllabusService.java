@@ -5,6 +5,7 @@ import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
 import com.example.hcm23_java14_team2.model.response.PageResponse;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.Syllabus.SyllabusResponse;
+import com.example.hcm23_java14_team2.model.response.Syllabus.UpdateSyllabusResponse;
 import com.example.hcm23_java14_team2.model.response.TrainingProgram.InsertTrainingProgramResponse;
 
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,7 @@ public interface SyllabusService {
     ApiResponse<List<SyllabusResponse>> getAllSyllabus(String search);
     SyllabusResponse findById(Long id);
     Syllabus findByID(Long id);
-    SyllabusResponse updateSyllabus(Long id,SyllabusRequest syllabusRequest, BindingResult bindingResult);
+    UpdateSyllabusResponse updateSyllabus(Long id, SyllabusRequest syllabusRequest, BindingResult bindingResult);
     ApiResponse<Object> insertSyllabus(SyllabusRequest request);
     String deleteSyllabus(Long id);
     void importFile(MultipartFile file);
