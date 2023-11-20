@@ -17,6 +17,5 @@ public class InsertTrainingProgramRequest {
     private Integer duration;
     private StatusTrainingProgram status;
 
-    private Long userId; //user create training program
     private List<Long> syllabusListId;
 }

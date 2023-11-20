@@ -69,3 +69,4 @@ public class UserPermissionServiceImpl implements UserPermissionService {
                 .build();
     }
 }
+
