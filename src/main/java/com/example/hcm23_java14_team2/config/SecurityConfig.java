@@ -76,7 +76,9 @@ public class SecurityConfig {
                 //
                 //.requestMatchers("/api/v1/user-permission/**").hasAnyAuthority("MODIFY_CLASS", "FULLACCESS_CLASS")
                 //.requestMatchers(HttpMethod.GET, "/api/v1/user-permission/**").hasAnyAuthority( "FULLACCESS_USER")
-                .requestMatchers("/api/v1/syllabus/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/v1/user-permission/edit/**").hasAnyAuthority( "FULLACCESS_USER")
+                //
+                //.requestMatchers("/api/v1/syllabus/**").authenticated()
                 .anyRequest()
                 .authenticated()
                 .and()
