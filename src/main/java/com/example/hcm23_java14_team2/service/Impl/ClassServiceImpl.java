@@ -147,6 +147,7 @@ public class ClassServiceImpl implements ClassService {
         classDetailResponse.setEndTime(classDetail.getEndTime());
         classDetailResponse.setLocation(classDetail.getLocation());
         classDetailResponse.setFsu(classDetail.getFSU());
+        classDetailResponse.setStatus(classDetail.getStatus());
         List<String> trainers = new ArrayList<>();
         List<String> admins = new ArrayList<>();
         for (Class_User cu : classDetail.getClassUserList()) {
@@ -227,6 +228,7 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ApiResponse<Object> getAllClasses(String search) {
         var classes = classRepository.searchByName(search);
+        classes.sort((class1, class2) -> class2.getModifiedDate().compareTo(class1.getModifiedDate()));
         List<ClassResponse> classResponses = new ArrayList<>();
 
         for (var item: classes){
