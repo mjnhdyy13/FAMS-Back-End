@@ -111,14 +111,11 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         List<TrainingProgram> trainingPrograms = trainingProgramRepository.searchByName(search);
         List<InsertTrainingProgramResponse> trainingProgramResponses = new ArrayList<>();
 
-        
         //set base properties
         for (TrainingProgram item : trainingPrograms){
             var trainingProgramResponse = trainingProgramMapper.toResponse(item);
-            trainingProgramResponse.setCreateBy(item.getUser().getName());
             trainingProgramResponse.setCreateDate(formatter.format(item.getCreateDate()));
             trainingProgramResponses.add(trainingProgramResponse);
-
         }
         ApiResponse<List<InsertTrainingProgramResponse>> apiResponse = new ApiResponse<>();
         apiResponse.ok(trainingProgramResponses);
@@ -177,13 +174,14 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
                 existingTrainingProgram.setStatus(trainingProgramRequest.getStatus());
             }
             if (trainingProgramRequest.getUserModified() != null) {
-                User user = userRepository.findById(trainingProgramRequest.getUserModified()).orElseThrow(() -> new NotFoundException("there is no user available"));
-                existingTrainingProgram.setUser(user);
+                String userName = userRepository.findById(trainingProgramRequest.getUserModified()).orElse(null).getName();
+                existingTrainingProgram.setModifiedBy(userName);
             }
+
+            existingTrainingProgram.setModifiedDate(new Date());
+
             trainingProgramRepository.removeSyllabusList(existingTrainingProgram.getId());
             existingTrainingProgram.setTraining_syllabusList(getTraining_SyllabusList(trainingProgramRequest.getSyllabusListId(), existingTrainingProgram));
-            existingTrainingProgram.setModifiedBy(userRepository.findById(trainingProgramRequest.getUserModified()).get().getName());
-            existingTrainingProgram.setModifiedDate(new Date());
             trainingProgramRepository.saveAndFlush(existingTrainingProgram);
             
             UpdateTrainingProgramResponse trainingProgramResponse = trainingProgramMapper.toUpdateResponse(existingTrainingProgram);
@@ -202,7 +200,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         try{
             List<Training_Syllabus> listTraining_Syllabus = new ArrayList<>();
 
-            User userCreate = userRepository.findById(trainingProgramRequest.getUserId()).orElse(null);
+            User userCreate = userRepository.findById(trainingProgramRequest.getCreateBy()).orElse(null);
             TrainingProgram trainingProgram = TrainingProgram.builder()
                 .name(trainingProgramRequest.getName())
                 .status(StatusTrainingProgram.DRAFT)
