@@ -24,6 +24,8 @@ public class SyllabusResponse {
     private Level level;
     private String principle;
     private StatusSyllabus status;
+    private String createBy;
+    private String createDate;
 
     private List<OutputStandardResponse> outputStandardList;
 
