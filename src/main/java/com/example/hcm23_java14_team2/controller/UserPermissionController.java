@@ -2,6 +2,7 @@ package com.example.hcm23_java14_team2.controller;
 
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
+import com.example.hcm23_java14_team2.model.request.UserPermission.EditPermissionRequest;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.UserPermission.UserPermissionResponse;
 import com.example.hcm23_java14_team2.service.UserPermissionService;
@@ -11,9 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,7 +32,10 @@ public class UserPermissionController {
             throw new ApplicationException("");
         }
     }
-    
+    @PutMapping("/edit")
+    ResponseEntity<?> editUserPermission(@RequestBody List<EditPermissionRequest> requests){
+        return new ResponseEntity<>(userPermissionService.editUserPermission(requests),HttpStatus.OK);
+    }
     @GetMapping("/welcome")
     public String welcome() {
         return "Welcome to my website";
