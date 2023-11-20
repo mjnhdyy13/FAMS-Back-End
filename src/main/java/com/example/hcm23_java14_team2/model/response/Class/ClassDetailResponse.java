@@ -14,7 +14,6 @@ import java.util.List;
 public class ClassDetailResponse {
     private String createBy;
     private String createDate;
-
     private String modifiedBy;
     private String modifiedDate;
     private String className;
