@@ -26,7 +26,6 @@ public class TrainingUnitController {
         @RequestParam(value = "day",defaultValue = "") Integer day) {
         return new ResponseEntity<>(trainingUnitService.addDayInSyllabus(id,day),HttpStatus.OK);
     }
-
     @PutMapping("/update/unit-name")
     public ResponseEntity<?> updateUnitName(@RequestBody UpdateUnitNameRequest request) {
         return new ResponseEntity<>(trainingUnitService.updateUnitName(request.getUnit_id(),request.getName()),HttpStatus.OK);

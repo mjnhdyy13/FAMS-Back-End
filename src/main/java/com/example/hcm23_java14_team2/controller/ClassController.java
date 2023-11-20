@@ -4,6 +4,7 @@ import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.entities.Class_User;
+import com.example.hcm23_java14_team2.model.request.Class.ClassRequest;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.service.ClassService;
 import com.example.hcm23_java14_team2.service.ClassUserService;
@@ -136,6 +137,14 @@ public class ClassController {
             throw ex; // Rethrow NotFoundException
         } catch (Exception ex) {
             throw new ApplicationException(); // Handle other exceptions
+        }
+    }
+    @PostMapping("/create")
+    public  ResponseEntity<?> createClass(@RequestBody ClassRequest classRequest){
+        try{
+            return new ResponseEntity<>(classService.addClass(classRequest), HttpStatus.OK);
+        }catch (ApplicationException e){
+            throw new ApplicationException();
         }
     }
 }

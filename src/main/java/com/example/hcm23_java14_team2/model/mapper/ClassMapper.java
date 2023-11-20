@@ -1,6 +1,7 @@
 package com.example.hcm23_java14_team2.model.mapper;
 
 
+import com.example.hcm23_java14_team2.model.request.Class.ClassRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,4 +15,6 @@ public interface ClassMapper {
     ClassResponse toResponse(Class classDetail);
     List<ClassResponse> toResponselist(List<Class> classList);
     ClassDetailResponse toDetailResponse(Class classDetail);
+
+    Class toEntity(ClassRequest classRequest);
 }

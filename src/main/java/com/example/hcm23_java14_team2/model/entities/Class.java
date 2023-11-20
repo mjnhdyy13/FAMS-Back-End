@@ -65,8 +65,7 @@ public class Class extends BaseEntity{
     @JsonIgnore
     private List<Class_User> classUserList = new ArrayList();
 
-    @ManyToOne()
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_program_id")
     private TrainingProgram trainingProgram;
 }
