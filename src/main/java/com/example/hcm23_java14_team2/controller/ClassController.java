@@ -43,7 +43,7 @@ public class ClassController {
                 return new ResponseEntity<>(classService.getAllClassesWithPage(search, page, size), HttpStatus.OK);
             return new ResponseEntity<>(classService.getAllClasses(search), HttpStatus.OK);
         } catch (Exception e) {
-            throw new ApplicationException();
+            throw new ApplicationException(e.getMessage());
         }
     }
 
