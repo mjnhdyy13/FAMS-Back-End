@@ -16,6 +16,5 @@ public class UpdateTrainingProgramRequest {
     private Integer duration;
     private StatusTrainingProgram status;
     
-    private Long userModified; //user that modify not create
     private List<Long> syllabusListId;
 }

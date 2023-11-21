@@ -8,6 +8,7 @@ import com.example.hcm23_java14_team2.model.entities.Enum.Level;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusSyllabus;
 import com.example.hcm23_java14_team2.model.entities.OutputStandard;
 import com.example.hcm23_java14_team2.model.entities.Syllabus;
+import com.example.hcm23_java14_team2.model.entities.User;
 import com.example.hcm23_java14_team2.model.mapper.OutputStandardMapper;
 import com.example.hcm23_java14_team2.model.mapper.SyllabusMapper;
 import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
@@ -15,21 +16,30 @@ import com.example.hcm23_java14_team2.model.response.*;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.OutputStandard.OutputStandardResponse;
 import com.example.hcm23_java14_team2.model.response.Syllabus.SyllabusResponse;
+import com.example.hcm23_java14_team2.model.response.Syllabus.UpdateSyllabusResponse;
 import com.example.hcm23_java14_team2.repository.OutputStandardRepository;
 import com.example.hcm23_java14_team2.repository.SyllabusRepository;
+import com.example.hcm23_java14_team2.repository.UserRepository;
 import com.example.hcm23_java14_team2.service.SyllabusService;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +47,8 @@ import java.util.Map;
 public class SyllabusServiceImpl implements SyllabusService {
     @Autowired
     private SyllabusRepository syllabusRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private OutputStandardRepository outputStandardRepository;
 
@@ -47,7 +58,7 @@ public class SyllabusServiceImpl implements SyllabusService {
     private OutputStandardMapper outputStandardMapper;
     @Autowired
     private ValidatorUtil validatorUtil;
-
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     @Override
     public Syllabus findByID(Long id) {
         try {
@@ -60,8 +71,14 @@ public class SyllabusServiceImpl implements SyllabusService {
     @Override
     public PageResponse<List<SyllabusResponse>> getAllSyllabusWithPage(String search, Integer page, Integer size) {
         var PageSyllabus = syllabusRepository.searchByNameWithPage(search,PageRequest.of(page-1,size));
-        List<SyllabusResponse> syllabusResponseList = syllabusMapper.toResponselist(PageSyllabus.getContent());
-
+        List<Syllabus> syllabusList = PageSyllabus.getContent();
+        List<SyllabusResponse> syllabusResponseList = new ArrayList<>();
+        for (var item: syllabusList){
+            SyllabusResponse syllabusResponse = syllabusMapper.toResponse(item);
+            syllabusResponse.setCreateBy(item.getCreateBy());
+            syllabusResponse.setCreateDate(formatter.format(item.getCreateDate()));
+            syllabusResponseList.add(syllabusResponse);
+        }
         for(SyllabusResponse syllabusResponse : syllabusResponseList){
             List<OutputStandard> outputStandardList = outputStandardRepository.findOutputStandardBySyllabusId(syllabusResponse.getId());
             List<OutputStandardResponse> outputStandardResponses = outputStandardMapper.toResponseList(outputStandardList);
@@ -74,10 +91,16 @@ public class SyllabusServiceImpl implements SyllabusService {
         listPageResponse.setTotalPage(total);
         return  listPageResponse;
     }
-
     @Override
     public ApiResponse<List<SyllabusResponse>> getAllSyllabus(String search) {
-        List<SyllabusResponse> syllabusResponseList = syllabusMapper.toResponselist(syllabusRepository.searchByName(search));
+        var syllabusList = syllabusRepository.searchByName(search);
+        List<SyllabusResponse> syllabusResponseList = new ArrayList<>();
+        for (var item: syllabusList){
+            SyllabusResponse syllabusResponse = syllabusMapper.toResponse(item);
+            syllabusResponse.setCreateBy(item.getCreateBy());
+            syllabusResponse.setCreateDate(formatter.format(item.getCreateDate()));
+            syllabusResponseList.add(syllabusResponse);
+        }
         for(SyllabusResponse syllabusResponse : syllabusResponseList){
             List<OutputStandard> outputStandardList = outputStandardRepository.findOutputStandardBySyllabusId(syllabusResponse.getId());
             List<OutputStandardResponse> outputStandardResponses = outputStandardMapper.toResponseList(outputStandardList);
@@ -91,7 +114,10 @@ public class SyllabusServiceImpl implements SyllabusService {
 
     @Override
     public SyllabusResponse findById(Long id) {
-        SyllabusResponse syllabusResponse = syllabusMapper.toResponse(syllabusRepository.findById(id).orElse(null));
+        var syllabusList = syllabusRepository.findById(id).orElse(null);
+        SyllabusResponse syllabusResponse = SyllabusResponse.builder().build();;
+        BeanUtils.copyProperties(syllabusList, syllabusResponse);
+        syllabusResponse.setCreateDate(formatter.format(syllabusList.getCreateDate()));
         if (syllabusResponse == null) {
             throw new NotFoundException("");
         }
@@ -100,8 +126,9 @@ public class SyllabusServiceImpl implements SyllabusService {
 
     @Transactional
     @Override
-    public SyllabusResponse updateSyllabus(Long id, SyllabusRequest syllabusRequest, BindingResult bindingResult) {
+    public UpdateSyllabusResponse updateSyllabus(Long id, SyllabusRequest syllabusRequest, BindingResult bindingResult) {
         try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Syllabus existingSyllabus = syllabusRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Syllabus Not Found"));
 
@@ -136,8 +163,16 @@ public class SyllabusServiceImpl implements SyllabusService {
             if (syllabusRequest.getStatus() != null) {
                 existingSyllabus.setStatus(syllabusRequest.getStatus());
             }
-            syllabusRepository.saveAndFlush(existingSyllabus);
-            return syllabusMapper.toResponse(existingSyllabus);
+            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+            String fullName = userDetails.getUsername();
+            User user = userRepository.findByGmail(fullName);
+            existingSyllabus.setModifiedBy(user.getName());
+            Date date = new Date();
+            existingSyllabus.setModifiedDate(date);
+            UpdateSyllabusResponse syllabusResponse = UpdateSyllabusResponse.builder().build();;
+            BeanUtils.copyProperties(existingSyllabus, syllabusResponse);
+            syllabusResponse.setModifiedDate(formatter.format(existingSyllabus.getModifiedDate()));
+            return syllabusResponse;
         } catch (ApplicationException ex) {
             throw ex;
         }
@@ -146,6 +181,11 @@ public class SyllabusServiceImpl implements SyllabusService {
     @Override
     public ApiResponse<Object> insertSyllabus(SyllabusRequest request) {
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String fullName = userDetails.getUsername();
+        User user = userRepository.findByGmail(fullName);
+        Date date = new Date();
         var syllabus = Syllabus.builder()
                 .codeName(request.getCodeName())
                 .topicName(request.getTopicName())
@@ -157,13 +197,18 @@ public class SyllabusServiceImpl implements SyllabusService {
                 .principle(request.getPrinciple())
                 .status(request.getStatus())
                 .build();
+        syllabus.setCreateBy(user.getName());
+        syllabus.setCreateDate(date);
         try {
             syllabusRepository.save(syllabus);
+            SyllabusResponse syllabusResponse = SyllabusResponse.builder().build();;
+            BeanUtils.copyProperties(syllabus, syllabusResponse);
+            syllabusResponse.setCreateDate(formatter.format(syllabus.getCreateDate()));
             var response = ApiResponse
                     .builder()
                     .statusCode("200")
                     .message("Insert successes")
-                    .data(syllabusMapper.toResponse(syllabus))
+                    .data(syllabusResponse)
                     .build();
             return response;
         } catch (Exception e) {
@@ -199,8 +244,8 @@ public class SyllabusServiceImpl implements SyllabusService {
             throw new RuntimeException("fail to store excel data: " + e.getMessage());
         }
     }
-    public ByteArrayInputStream load() {
-        List<Syllabus> syllabusList = syllabusRepository.findAll();
+    public ByteArrayInputStream load(Long id) {
+        Syllabus syllabusList = syllabusRepository.findById(id).orElse(null);
         ByteArrayInputStream in = ExcelHelper.tutorialsToExcel(syllabusList);
         return in;
     }

@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,8 @@ import java.util.stream.Collectors;
 public class ClassServiceImpl implements ClassService {
     @Autowired
     ClassRepository classRepository;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     Training_SyllabusRepository trainingSyllabusRepository;
     @Autowired
@@ -64,6 +67,12 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ApiResponse<Object> updateClass(Long id, ClassUpdateRequest classRequest, BindingResult bindingResult) {
         try {
+            //get account user
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+            String fullName = userDetails.getUsername();
+            User user = userRepository.findByGmail(fullName);
+
             Class existingClass = classRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Class Not Found"));
 
@@ -71,7 +80,7 @@ public class ClassServiceImpl implements ClassService {
                     .orElseThrow(() -> new NotFoundException("TrainingProgram Not Found"));
 
             Date date = new Date();
-            if (existingClass.getStatus() == null || (!existingClass.getStatus().toString().equals("PLANNING") && !existingClass.getStatus().toString().equals("SCHEDULED"))) {
+            if (existingClass.getStatus() == null || (existingClass.getStatus() != StatusClass.PLANNING && existingClass.getStatus() != StatusClass.SCHEDULED)) {
                 throw new NotFoundException("Class can't be edit!");
             } else {
                 if (bindingResult.hasErrors()) {
@@ -87,8 +96,9 @@ public class ClassServiceImpl implements ClassService {
                 existingClass.setLocation(classRequest.getLocation());
                 existingClass.setDuration(classRequest.getDuration());
                 existingClass.setAttendee(classRequest.getAttendee());
+                existingClass.setStatus(classRequest.getStatus());
                 existingClass.setFSU(classRequest.getFSU());
-                existingClass.setModifiedBy(classRequest.getModifiedBy());
+                existingClass.setModifiedBy(user.getName());
                 existingClass.setModifiedDate(date);
                 existingClass.setTrainingProgram(existingtrainingProgram);
                 if (classRequest.getStatus() != null) {
@@ -99,9 +109,9 @@ public class ClassServiceImpl implements ClassService {
 
             ApiResponse<Object> apiResponse = new ApiResponse<>();
             ClassResponse classResponse = classMapper.toResponse(existingClass);
-            classResponse.setModifiedDate(formatter.format(date));
+            classResponse.setModifiedDate(formatter.format(new Date()));
             classResponse.setCreateDate(formatter.format(existingClass.getCreateDate()));
-            apiResponse.ok(classMapper.toResponse(existingClass));
+            apiResponse.ok(classResponse);
             return apiResponse;
         } catch (ApplicationException ex) {
             throw ex;
@@ -131,10 +141,11 @@ public class ClassServiceImpl implements ClassService {
 
     private ClassDetailResponse convertToDTO(Class classDetail) {
         ClassDetailResponse classDetailResponse = new ClassDetailResponse();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         classDetailResponse.setCreateBy(classDetail.getCreateBy());
-        classDetailResponse.setCreateDate(String.valueOf(classDetail.getCreateDate()));
+        classDetailResponse.setCreateDate(formatter.format(classDetail.getCreateDate()));
         classDetailResponse.setModifiedBy(classDetail.getModifiedBy());
-        classDetailResponse.setModifiedDate(String.valueOf(classDetail.getModifiedDate()));
+        classDetailResponse.setModifiedDate(formatter.format(classDetail.getModifiedDate()));
         classDetailResponse.setClassName(classDetail.getClassName());
         classDetailResponse.setClassCode(classDetail.getClassCode());
         classDetailResponse.setAttendee(classDetail.getAttendee());
@@ -142,17 +153,22 @@ public class ClassServiceImpl implements ClassService {
         classDetailResponse.setEndTime(classDetail.getEndTime());
         classDetailResponse.setLocation(classDetail.getLocation());
         classDetailResponse.setFsu(classDetail.getFSU());
+        classDetailResponse.setStatus(classDetail.getStatus());
+        List<String> trainers = new ArrayList<>();
+        List<String> admins = new ArrayList<>();
         for (Class_User cu : classDetail.getClassUserList()) {
             User user = cu.getUser();
             Role role = user.getUserPermission().getRoleName();
             if (role == Role.TRAINER) {
                 // this is the trainer
-                classDetailResponse.setTrainerName(user.getName());
+                trainers.add(user.getName());
             } else if (role == Role.CLASSADMIN) {
                 // this is the admin
-                classDetailResponse.setAdminName(user.getName());
+                admins.add(user.getName());
             }
         }
+        classDetailResponse.setTrainerName(trainers);
+        classDetailResponse.setAdminName(admins);
 
         TrainingProgram trainingProgram = classDetail.getTrainingProgram();
         if (trainingProgram != null) {
@@ -165,10 +181,11 @@ public class ClassServiceImpl implements ClassService {
 
     private TrainingProgramViewClassResponse convertTrainingProgramToDTO(TrainingProgram trainingProgram) {
         TrainingProgramViewClassResponse trainingProgramViewClassResponse = new TrainingProgramViewClassResponse();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         trainingProgramViewClassResponse.setName(trainingProgram.getName());
         trainingProgramViewClassResponse.setDuration(trainingProgram.getDuration());
         trainingProgramViewClassResponse.setModifiedBy(trainingProgram.getModifiedBy());
-        trainingProgramViewClassResponse.setModifiedDate(String.valueOf(trainingProgram.getModifiedDate()));
+        trainingProgramViewClassResponse.setModifiedDate(formatter.format(trainingProgram.getModifiedDate()));
         List<SyllabusViewClassResponse> syllabusViewClassResponses = trainingProgram.getTraining_syllabusList().stream()
                 .map(Training_Syllabus::getSyllabus)
                 .map(this::convertSyllabusToDTO)
@@ -181,12 +198,13 @@ public class ClassServiceImpl implements ClassService {
 
     private SyllabusViewClassResponse convertSyllabusToDTO(Syllabus syllabus) {
         SyllabusViewClassResponse syllabusViewClassResponse = new SyllabusViewClassResponse();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         syllabusViewClassResponse.setTopicName(syllabus.getTopicName());
         syllabusViewClassResponse.setCodeName(syllabus.getCodeName());
         syllabusViewClassResponse.setVersion(syllabus.getVersion());
         syllabusViewClassResponse.setStatus(syllabus.getStatus());
         syllabusViewClassResponse.setCreateBy(syllabus.getCreateBy());
-        syllabusViewClassResponse.setCreateDate(String.valueOf(syllabus.getCreateDate()));
+        syllabusViewClassResponse.setCreateDate(formatter.format(syllabus.getCreateDate()));
         // set other fields from syllabus to syllabusDTO
         return syllabusViewClassResponse;
     }
@@ -259,12 +277,15 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public ApiResponse<Object> getAllClasses(String search) {
-        var classList = classRepository.searchByName(search);
-        List<ClassResponse> classResponses = classMapper.toResponselist(classList);
+        var classes = classRepository.searchByName(search);
+        classes.sort((class1, class2) -> class2.getModifiedDate().compareTo(class1.getModifiedDate()));
+        List<ClassResponse> classResponses = new ArrayList<>();
 
-        for (var item: classResponses){
-            item.setCreateDate(formatter.format(item.getCreateDate()));
-            item.setModifiedDate(formatter.format(item.getModifiedDate()));
+        for (var item: classes){
+            ClassResponse response = classMapper.toResponse(item);
+            response.setCreateDate(formatter.format(item.getCreateDate()));
+            response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            classResponses.add(response);
         }
         
         PageResponse<Object> apiResponse = new PageResponse<>();
@@ -275,11 +296,14 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public PageResponse<Object> getAllClassesWithPage(String searchName, Integer page, Integer size) {
         var PageClass = classRepository.searchByClassName(searchName, PageRequest.of(page-1,size));
-        List<ClassResponse> classResponses = classMapper.toResponselist(PageClass.getContent());
+        List<Class> classes = PageClass.getContent();
+        List<ClassResponse> classResponses = new ArrayList<>();
 
-        for (var item: classResponses){
-            item.setCreateDate(formatter.format(item.getCreateDate()));
-            item.setModifiedDate(formatter.format(item.getModifiedDate()));
+        for (var item: classes){
+            ClassResponse response = classMapper.toResponse(item);
+            response.setCreateDate(formatter.format(item.getCreateDate()));
+            response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            classResponses.add(response);
         }
         
         PageResponse<Object> pageResponse = new PageResponse<>();

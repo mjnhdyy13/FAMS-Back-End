@@ -8,6 +8,7 @@ import com.example.hcm23_java14_team2.model.request.Syllabus.SyllabusRequest;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.Syllabus.ImportMessageResponse;
 import com.example.hcm23_java14_team2.model.response.Syllabus.SyllabusResponse;
+import com.example.hcm23_java14_team2.model.response.Syllabus.UpdateSyllabusResponse;
 import com.example.hcm23_java14_team2.service.SyllabusService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -73,7 +74,7 @@ public class SyllabusController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse> updateSyllabus(@PathVariable  Long id,@Valid @RequestBody SyllabusRequest syllabusRequest, BindingResult bindingResult) {
         try {
-            SyllabusResponse SyllabusResponse = syllabusService.updateSyllabus(id,syllabusRequest, bindingResult);
+            UpdateSyllabusResponse SyllabusResponse = syllabusService.updateSyllabus(id,syllabusRequest, bindingResult);
             ApiResponse apiResponse = new ApiResponse();
             apiResponse.ok(SyllabusResponse);
             return ResponseEntity.ok(apiResponse);
@@ -114,10 +115,10 @@ public class SyllabusController {
         message = "Please upload an excel file!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ImportMessageResponse(message));
     }
-    @GetMapping("/download")
-    public ResponseEntity<Resource> getFile() {
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> getFile(@PathVariable  Long id) {
         String filename = "syllabus.xlsx";
-        InputStreamResource file = new InputStreamResource(syllabusService.load());
+        InputStreamResource file = new InputStreamResource(syllabusService.load(id));
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
