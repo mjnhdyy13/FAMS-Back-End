@@ -34,9 +34,9 @@ public class TrainingUnitController {
     public ResponseEntity<?> deleteUnit(@RequestParam(value = "unit_id",defaultValue = "") Long unit_id) {
         return new ResponseEntity<>(trainingUnitService.deleteUnit(unit_id),HttpStatus.OK);
     }
-    @DeleteMapping("/delete-day/{id}/{day}")
-    public ResponseEntity<?> deleteDay(@PathVariable Long id,
-                                       @PathVariable Integer day) {
+    @DeleteMapping("/delete-day")
+    public ResponseEntity<?> deleteDay(@RequestParam(value = "id",defaultValue = "") Long id,
+                                       @RequestParam(value = "day",defaultValue = "") Integer day) {
         return new ResponseEntity<>(trainingUnitService.deleteDay(id, day),HttpStatus.OK);
     }
     @GetMapping("/fetch-unit")
