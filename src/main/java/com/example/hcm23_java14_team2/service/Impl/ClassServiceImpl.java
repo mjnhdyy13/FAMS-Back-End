@@ -16,7 +16,6 @@ import com.example.hcm23_java14_team2.model.response.Class.SyllabusViewClassResp
 import com.example.hcm23_java14_team2.model.response.Class.TrainingProgramViewClassResponse;
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
-import com.example.hcm23_java14_team2.handler.GlobalExceptionHandler;
 import com.example.hcm23_java14_team2.model.mapper.ClassMapper;
 
 import com.example.hcm23_java14_team2.repository.*;
@@ -56,8 +55,6 @@ public class ClassServiceImpl implements ClassService {
     SyllabusRepository syllabusRepository;
     @Autowired
     ClassMapper classMapper;
-    @Autowired
-    UserRepository userRepository;
     @Autowired
     private ValidatorUtil validatorUtil;
 
