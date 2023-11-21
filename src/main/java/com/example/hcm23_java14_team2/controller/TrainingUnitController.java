@@ -17,8 +17,8 @@ public class TrainingUnitController {
     public ResponseEntity<?> add(@RequestBody TrainingUnitRequest request) {
         return new ResponseEntity<>(trainingUnitService.add(request), HttpStatus.OK);
     }
-    @GetMapping("/fetch")
-    public ResponseEntity<?> fetchBySyllabus(@RequestParam(value = "id",defaultValue = "") Long id) {
+    @GetMapping("/fetch/{id}")
+    public ResponseEntity<?> fetchBySyllabus(@PathVariable Long id) {
         return new ResponseEntity<>(trainingUnitService.fetchDayAndUnit(id),HttpStatus.OK);
     }
     @PostMapping("/add-day")
