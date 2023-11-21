@@ -28,5 +28,5 @@ public class UserValidator implements Validator {
                 errors.rejectValue("userPermissionId", "error.userPermissionId", "UserPermission does not exist!");
             }
         }
-    }
+    }    
 }
