@@ -5,6 +5,7 @@ import com.example.hcm23_java14_team2.model.entities.*;
 import com.example.hcm23_java14_team2.model.entities.Class;
 import com.example.hcm23_java14_team2.model.entities.Enum.Role;
 import com.example.hcm23_java14_team2.model.entities.Enum.StatusClass;
+import com.example.hcm23_java14_team2.model.request.Class.ClassRequest;
 import com.example.hcm23_java14_team2.model.request.Class.ClassUpdateRequest;
 import com.example.hcm23_java14_team2.model.request.Class.ClassSearchRequest;
 import com.example.hcm23_java14_team2.model.response.PageResponse;
@@ -15,9 +16,8 @@ import com.example.hcm23_java14_team2.model.response.Class.SyllabusViewClassResp
 import com.example.hcm23_java14_team2.model.response.Class.TrainingProgramViewClassResponse;
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
-import com.example.hcm23_java14_team2.handler.GlobalExceptionHandler;
 import com.example.hcm23_java14_team2.model.mapper.ClassMapper;
-
+import com.example.hcm23_java14_team2.model.mapper.TrainingProgramMapper;
 import com.example.hcm23_java14_team2.repository.*;
 import com.example.hcm23_java14_team2.service.ClassService;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
@@ -32,6 +32,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +55,8 @@ public class ClassServiceImpl implements ClassService {
     SyllabusRepository syllabusRepository;
     @Autowired
     ClassMapper classMapper;
+    @Autowired
+    TrainingProgramMapper trainingProgramMapper;
     @Autowired
     private ValidatorUtil validatorUtil;
 
@@ -225,6 +230,50 @@ public class ClassServiceImpl implements ClassService {
             throw ex;
         }
     }
+
+    @Override
+    @Transactional
+    public ApiResponse<Object> addClass(ClassRequest classRequest) {
+        var Class = classMapper.toEntity(classRequest);
+        TrainingProgram trainingProgram = trainingProgramRepository.findById(classRequest.getTrainingProgramId()).
+                orElseThrow(() -> new NotFoundException("Không tìm thấy TrainingProgam"));
+
+        Class.setTrainingProgram(trainingProgram);
+        //Set end_day
+        String inputDate = classRequest.getStartDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate start_day = LocalDate.parse(inputDate, formatter);
+        LocalDate end_day = start_day.plusDays(classRequest.getDuration());
+        Class.setEndDate(end_day.toString());
+
+        //Set create date
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = calendar.getTime();
+        Class.setCreateDate(currentDate);
+
+        //Set create by
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        User user = userRepository.findByGmail(userDetails.getUsername());
+        Class.setCreateBy(user.getName());
+
+        //Set Class Code
+//        Arrays.stream(originalString.split("\\s+")) // neu lấy 3 kí tự của mỗi từ ghép lại
+//                .filter(word -> word.length() >= 3)
+//                .map(word -> word.substring(0, 3))
+//                .forEach(result -> System.out.println("Ba ký tự đầu: " + result));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yy");
+        String lastTwoDigits = dateFormat.format(currentDate);
+        String code = classRequest.getLocation()+"_"+Class.getClassName().replace(" ","")+"_"+lastTwoDigits;
+        Class.setClassCode(code);
+        //save
+        var save = classRepository.saveAndFlush(Class);
+        ApiResponse<Object> apiResponse = new ApiResponse<>();
+        apiResponse.ok(save);
+
+        return apiResponse;
+    }
+
     @Override
     public ApiResponse<Object> getAllClasses(String search) {
         var classes = classRepository.searchByName(search);
@@ -235,9 +284,10 @@ public class ClassServiceImpl implements ClassService {
             ClassResponse response = classMapper.toResponse(item);
             response.setCreateDate(formatter.format(item.getCreateDate()));
             response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            TrainingProgramViewClassResponse trainingProgram = convertTrainingProgramToDTO(item.getTrainingProgram());
+            response.setTrainingProgram(trainingProgram);
             classResponses.add(response);
-        }  
-        
+        }
         PageResponse<Object> apiResponse = new PageResponse<>();
         apiResponse.ok(classResponses);
         return apiResponse;
@@ -246,15 +296,17 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public PageResponse<Object> getAllClassesWithPage(String searchName, Integer page, Integer size) {
         var PageClass = classRepository.searchByClassName(searchName, PageRequest.of(page-1,size));
-        List<Class> classes = PageClass.getContent(); 
+        List<Class> classes = PageClass.getContent();
         List<ClassResponse> classResponses = new ArrayList<>();
 
         for (var item: classes){
             ClassResponse response = classMapper.toResponse(item);
             response.setCreateDate(formatter.format(item.getCreateDate()));
             response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            TrainingProgramViewClassResponse trainingProgram = convertTrainingProgramToDTO(item.getTrainingProgram());
+            response.setTrainingProgram(trainingProgram);
             classResponses.add(response);
-        }   
+        }
         
         PageResponse<Object> pageResponse = new PageResponse<>();
         pageResponse.ok(classResponses);

@@ -1,5 +1,6 @@
 package com.example.hcm23_java14_team2.service;
 
+import com.example.hcm23_java14_team2.model.request.Class.ClassRequest;
 import org.springframework.validation.BindingResult;
 
 import com.example.hcm23_java14_team2.model.request.Class.ClassUpdateRequest;
@@ -16,4 +17,6 @@ public interface ClassService {
     ApiResponse<Object> updateClass(Long id, ClassUpdateRequest classRequest, BindingResult bindingResult);
     ApiResponse<Object> getClassDetails(Long id);
     ApiResponse<Object> deleteByIdClass(Long id);
+
+    ApiResponse<Object> addClass(ClassRequest classRequest);
 }

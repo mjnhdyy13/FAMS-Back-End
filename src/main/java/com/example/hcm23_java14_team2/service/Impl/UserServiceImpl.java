@@ -3,6 +3,7 @@ package com.example.hcm23_java14_team2.service.Impl;
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
+import com.example.hcm23_java14_team2.model.entities.Enum.StatusUser;
 import com.example.hcm23_java14_team2.model.entities.User;
 import com.example.hcm23_java14_team2.model.entities.UserPermission;
 import com.example.hcm23_java14_team2.model.mapper.UserMapper;
@@ -150,7 +151,9 @@ public class UserServiceImpl implements UserService {
         if (user.isEmpty()) {
             throw new NotFoundException("User Not Found");
         }
-        userRepository.deleteById(id);
+        //userRepository.deleteById(id);
+        user.get().setStatusUser(StatusUser.DEACTIVE);
+        userRepository.saveAndFlush(user.get());
 
         return userMapper.toResponse(user.get());
     }
