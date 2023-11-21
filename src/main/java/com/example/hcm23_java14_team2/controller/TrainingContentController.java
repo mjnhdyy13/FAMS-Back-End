@@ -68,8 +68,8 @@ public class TrainingContentController {
             throw new ApplicationException(e.getMessage());
         }
     }
-    @PatchMapping("/update")
-    public ResponseEntity<?> updateTrainingContent(@RequestParam(value = "id",defaultValue = "") Long id,
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<?> updateTrainingContent(@PathVariable Long id,
                                                    @RequestBody TrainingContentUpdateRequest request) {
         return new ResponseEntity<>(trainingContentService.updateTrainingContent(id,request),HttpStatus.OK);
     }
