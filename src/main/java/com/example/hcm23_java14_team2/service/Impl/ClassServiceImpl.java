@@ -223,7 +223,7 @@ public class ClassServiceImpl implements ClassService {
                 ClassResponse classResponse = classMapper.toResponse(Class);
                 apiResponse.ok(classResponse);
             } else {
-                apiResponse.notFound("Not found class");
+                apiResponse.notFound("Can't delete Class because Class is " + Class.getStatus() );
             }
             return apiResponse;
         } catch (ApplicationException ex) {
