@@ -5,6 +5,7 @@ import com.example.hcm23_java14_team2.exception.NotFoundException;
 import com.example.hcm23_java14_team2.model.entities.UserPermission;
 import com.example.hcm23_java14_team2.model.mapper.UserPermissionMapper;
 import com.example.hcm23_java14_team2.model.request.UserPermission.EditPermissionRequest;
+import com.example.hcm23_java14_team2.model.request.UserPermission.ListEditUserPermissionRq;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.UserPermission.UserPermissionResponse;
 import com.example.hcm23_java14_team2.repository.UserPermissionRepository;
@@ -22,23 +23,26 @@ public class UserPermissionServiceImpl implements UserPermissionService {
     private UserPermissionRepository userPermissionRepository;
 
     private final UserPermissionMapper userPermissionMapper;
+
     @Override
     public List<UserPermissionResponse> getAllPermission() {
 
-        return  userPermissionMapper.toResponseList(userPermissionRepository.findAll());
+        return userPermissionMapper.toResponseList(userPermissionRepository.findAll());
     }
 
     @Override
     public UserPermissionResponse findById(Long id) {
         UserPermission userPermission = userPermissionRepository.findById(id).orElse(null);
-        if(userPermission == null) {throw  new NotFoundException("");}
-        return  userPermissionMapper.toResponse(userPermissionRepository.findById(id).get());
+        if (userPermission == null) {
+            throw new NotFoundException("");
+        }
+        return userPermissionMapper.toResponse(userPermissionRepository.findById(id).get());
     }
 
     @Override
-    public ApiResponse<Object> editUserPermission(List<EditPermissionRequest> requests) {
+    public ApiResponse<Object> editUserPermission(ListEditUserPermissionRq requests) {
         try {
-            for (EditPermissionRequest editPermissionRequest : requests) {
+            for (EditPermissionRequest editPermissionRequest : requests.getList()) {
                 var user_permission = userPermissionRepository.findById(editPermissionRequest.getId());
                 if (user_permission.isPresent()) {
                     user_permission.get().setSyllabus(editPermissionRequest.getSyllabus());
@@ -58,7 +62,7 @@ public class UserPermissionServiceImpl implements UserPermissionService {
                         .build();
             }
         } catch (Exception e) {
-            return ApiResponse.builder()
+           return ApiResponse.builder()
                     .statusCode("400")
                     .message(e.getMessage())
                     .build();
@@ -68,5 +72,6 @@ public class UserPermissionServiceImpl implements UserPermissionService {
                 .message("Has a failed, check the input")
                 .build();
     }
+
 }
 
