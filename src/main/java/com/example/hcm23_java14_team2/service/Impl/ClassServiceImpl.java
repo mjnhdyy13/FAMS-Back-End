@@ -17,7 +17,7 @@ import com.example.hcm23_java14_team2.model.response.Class.TrainingProgramViewCl
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.mapper.ClassMapper;
-
+import com.example.hcm23_java14_team2.model.mapper.TrainingProgramMapper;
 import com.example.hcm23_java14_team2.repository.*;
 import com.example.hcm23_java14_team2.service.ClassService;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
@@ -55,6 +55,8 @@ public class ClassServiceImpl implements ClassService {
     SyllabusRepository syllabusRepository;
     @Autowired
     ClassMapper classMapper;
+    @Autowired
+    TrainingProgramMapper trainingProgramMapper;
     @Autowired
     private ValidatorUtil validatorUtil;
 
@@ -282,9 +284,10 @@ public class ClassServiceImpl implements ClassService {
             ClassResponse response = classMapper.toResponse(item);
             response.setCreateDate(formatter.format(item.getCreateDate()));
             response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            TrainingProgramViewClassResponse trainingProgram = convertTrainingProgramToDTO(item.getTrainingProgram());
+            response.setTrainingProgram(trainingProgram);
             classResponses.add(response);
         }
-        
         PageResponse<Object> apiResponse = new PageResponse<>();
         apiResponse.ok(classResponses);
         return apiResponse;
@@ -300,6 +303,8 @@ public class ClassServiceImpl implements ClassService {
             ClassResponse response = classMapper.toResponse(item);
             response.setCreateDate(formatter.format(item.getCreateDate()));
             response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            TrainingProgramViewClassResponse trainingProgram = convertTrainingProgramToDTO(item.getTrainingProgram());
+            response.setTrainingProgram(trainingProgram);
             classResponses.add(response);
         }
         
