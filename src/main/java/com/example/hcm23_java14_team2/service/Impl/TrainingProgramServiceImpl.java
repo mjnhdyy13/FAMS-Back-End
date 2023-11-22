@@ -118,6 +118,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         for (TrainingProgram item : trainingPrograms){
             var trainingProgramResponse = trainingProgramMapper.toResponse(item);
             trainingProgramResponse.setCreateDate(formatter.format(item.getCreateDate()));
+            trainingProgramResponse.setSyllabusList(getSyllabusList(item));
             trainingProgramResponses.add(trainingProgramResponse);
         }
         ApiResponse<List<InsertTrainingProgramResponse>> apiResponse = new ApiResponse<>();
@@ -215,7 +216,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
             TrainingProgram trainingProgram = TrainingProgram.builder()
                 .name(trainingProgramRequest.getName())
-                .status(StatusTrainingProgram.DRAFT)
+                .status(StatusTrainingProgram.ACTIVE)
                 .code(trainingProgramRequest.getCode())
                 .startTime(trainingProgramRequest.getStartTime())
                 .duration(trainingProgramRequest.getDuration())
