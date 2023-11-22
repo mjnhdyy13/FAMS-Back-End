@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 public class TrainingProgramViewClassResponse {
+    private Integer id;
     private String name;
     private Integer duration;
     private String modifiedBy;

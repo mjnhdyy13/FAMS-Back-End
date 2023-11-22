@@ -142,7 +142,10 @@ public class ClassServiceImpl implements ClassService {
         classDetailResponse.setCreateBy(classDetail.getCreateBy());
         classDetailResponse.setCreateDate(formatter.format(classDetail.getCreateDate()));
         classDetailResponse.setModifiedBy(classDetail.getModifiedBy());
-        classDetailResponse.setModifiedDate(formatter.format(classDetail.getModifiedDate()));
+        if(classDetail.getModifiedDate() != null)
+        {
+            classDetailResponse.setModifiedDate(formatter.format(classDetail.getModifiedDate()));
+        }
         classDetailResponse.setClassName(classDetail.getClassName());
         classDetailResponse.setClassCode(classDetail.getClassCode());
         classDetailResponse.setAttendee(classDetail.getAttendee());
@@ -179,6 +182,7 @@ public class ClassServiceImpl implements ClassService {
     private TrainingProgramViewClassResponse convertTrainingProgramToDTO(TrainingProgram trainingProgram) {
         TrainingProgramViewClassResponse trainingProgramViewClassResponse = new TrainingProgramViewClassResponse();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        trainingProgramViewClassResponse.setId(trainingProgram.getId());
         trainingProgramViewClassResponse.setName(trainingProgram.getName());
         trainingProgramViewClassResponse.setDuration(trainingProgram.getDuration());
         trainingProgramViewClassResponse.setModifiedBy(trainingProgram.getModifiedBy());
