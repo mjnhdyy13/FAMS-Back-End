@@ -3,6 +3,7 @@ package com.example.hcm23_java14_team2.controller;
 
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.model.request.UserPermission.EditPermissionRequest;
+import com.example.hcm23_java14_team2.model.request.UserPermission.ListEditUserPermissionRq;
 import com.example.hcm23_java14_team2.model.response.Api.ApiResponse;
 import com.example.hcm23_java14_team2.model.response.UserPermission.UserPermissionResponse;
 import com.example.hcm23_java14_team2.service.UserPermissionService;
@@ -33,7 +34,7 @@ public class UserPermissionController {
         }
     }
     @PutMapping("/edit")
-    ResponseEntity<?> editUserPermission(@RequestBody List<EditPermissionRequest> requests){
+    ResponseEntity<?> editUserPermission(@RequestBody ListEditUserPermissionRq requests){
         return new ResponseEntity<>(userPermissionService.editUserPermission(requests),HttpStatus.OK);
     }
     @GetMapping("/welcome")
