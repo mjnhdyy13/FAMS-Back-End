@@ -28,5 +28,5 @@ public class ClassResponse {
     private String modifiedBy;
     private String modifiedDate;
 
-    private TrainingProgram trainingProgram;
+    private TrainingProgramViewClassResponse trainingProgram;
 }

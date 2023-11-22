@@ -67,5 +67,6 @@ public class Class extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_program_id")
+    @JsonIgnore
     private TrainingProgram trainingProgram;
 }

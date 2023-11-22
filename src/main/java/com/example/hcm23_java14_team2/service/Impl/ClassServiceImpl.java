@@ -17,7 +17,7 @@ import com.example.hcm23_java14_team2.model.response.Class.TrainingProgramViewCl
 import com.example.hcm23_java14_team2.exception.ApplicationException;
 import com.example.hcm23_java14_team2.exception.ValidationException;
 import com.example.hcm23_java14_team2.model.mapper.ClassMapper;
-
+import com.example.hcm23_java14_team2.model.mapper.TrainingProgramMapper;
 import com.example.hcm23_java14_team2.repository.*;
 import com.example.hcm23_java14_team2.service.ClassService;
 import com.example.hcm23_java14_team2.util.ValidatorUtil;
@@ -55,6 +55,8 @@ public class ClassServiceImpl implements ClassService {
     SyllabusRepository syllabusRepository;
     @Autowired
     ClassMapper classMapper;
+    @Autowired
+    TrainingProgramMapper trainingProgramMapper;
     @Autowired
     private ValidatorUtil validatorUtil;
 
@@ -142,7 +144,10 @@ public class ClassServiceImpl implements ClassService {
         classDetailResponse.setCreateBy(classDetail.getCreateBy());
         classDetailResponse.setCreateDate(formatter.format(classDetail.getCreateDate()));
         classDetailResponse.setModifiedBy(classDetail.getModifiedBy());
-        classDetailResponse.setModifiedDate(formatter.format(classDetail.getModifiedDate()));
+        if(classDetail.getModifiedDate() != null)
+        {
+            classDetailResponse.setModifiedDate(formatter.format(classDetail.getModifiedDate()));
+        }
         classDetailResponse.setClassName(classDetail.getClassName());
         classDetailResponse.setClassCode(classDetail.getClassCode());
         classDetailResponse.setAttendee(classDetail.getAttendee());
@@ -179,6 +184,7 @@ public class ClassServiceImpl implements ClassService {
     private TrainingProgramViewClassResponse convertTrainingProgramToDTO(TrainingProgram trainingProgram) {
         TrainingProgramViewClassResponse trainingProgramViewClassResponse = new TrainingProgramViewClassResponse();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        trainingProgramViewClassResponse.setId(trainingProgram.getId());
         trainingProgramViewClassResponse.setName(trainingProgram.getName());
         trainingProgramViewClassResponse.setDuration(trainingProgram.getDuration());
         trainingProgramViewClassResponse.setModifiedBy(trainingProgram.getModifiedBy());
@@ -282,9 +288,10 @@ public class ClassServiceImpl implements ClassService {
             ClassResponse response = classMapper.toResponse(item);
             response.setCreateDate(formatter.format(item.getCreateDate()));
             response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            TrainingProgramViewClassResponse trainingProgram = convertTrainingProgramToDTO(item.getTrainingProgram());
+            response.setTrainingProgram(trainingProgram);
             classResponses.add(response);
         }
-        
         PageResponse<Object> apiResponse = new PageResponse<>();
         apiResponse.ok(classResponses);
         return apiResponse;
@@ -300,6 +307,8 @@ public class ClassServiceImpl implements ClassService {
             ClassResponse response = classMapper.toResponse(item);
             response.setCreateDate(formatter.format(item.getCreateDate()));
             response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            TrainingProgramViewClassResponse trainingProgram = convertTrainingProgramToDTO(item.getTrainingProgram());
+            response.setTrainingProgram(trainingProgram);
             classResponses.add(response);
         }
         

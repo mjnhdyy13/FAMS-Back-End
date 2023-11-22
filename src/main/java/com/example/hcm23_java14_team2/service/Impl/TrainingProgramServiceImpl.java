@@ -118,6 +118,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         for (TrainingProgram item : trainingPrograms){
             var trainingProgramResponse = trainingProgramMapper.toResponse(item);
             trainingProgramResponse.setCreateDate(formatter.format(item.getCreateDate()));
+            trainingProgramResponse.setSyllabusList(getSyllabusList(item));
             trainingProgramResponses.add(trainingProgramResponse);
         }
         ApiResponse<List<InsertTrainingProgramResponse>> apiResponse = new ApiResponse<>();

@@ -37,8 +37,8 @@ public class ClassController {
     }
     @GetMapping("/list")
     public ResponseEntity<?> getAllClasses(@RequestParam(value = "search",defaultValue = "") String search,
-                                @RequestParam(value = "page",required = false) Integer page,
-                                @RequestParam(value = "size",defaultValue = "2") Integer size) {
+                                           @RequestParam(value = "page",required = false) Integer page,
+                                           @RequestParam(value = "size",defaultValue = "2") Integer size) {
         try {
             if (page != null)
                 return new ResponseEntity<>(classService.getAllClassesWithPage(search, page, size), HttpStatus.OK);
@@ -108,15 +108,15 @@ public class ClassController {
     @GetMapping("/classes/{id}")
     public ResponseEntity<?> getClassDetails(@PathVariable Long id)
     {
-        try{
+//        try{
             ApiResponse<Object> apiResponse = classService.getClassDetails(id);
 
             return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-        } catch (NotFoundException ex) {
-            throw ex; // Rethrow NotFoundException
-        } catch (Exception ex) {
-            throw new ApplicationException(); // Handle other exceptions
-        }
+//        } catch (NotFoundException ex) {
+//            throw ex; // Rethrow NotFoundException
+//        } catch (Exception ex) {
+//            throw new ApplicationException(); // Handle other exceptions
+//        }
 
     }
     @PostMapping("{id}/addUser")
