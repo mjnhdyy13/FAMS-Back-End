@@ -281,13 +281,13 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ApiResponse<Object> getAllClasses(String search) {
         var classes = classRepository.searchByName(search);
-        classes.sort((class1, class2) -> class2.getModifiedDate().compareTo(class1.getModifiedDate()));
+        //classes.sort((class1, class2) -> class2.getModifiedDate().compareTo(class1.getModifiedDate()));
         List<ClassResponse> classResponses = new ArrayList<>();
 
         for (var item: classes){
             ClassResponse response = classMapper.toResponse(item);
             response.setCreateDate(formatter.format(item.getCreateDate()));
-            response.setModifiedDate(formatter.format(item.getModifiedDate()));
+           // response.setModifiedDate(formatter.format(item.getModifiedDate()));
             TrainingProgramViewClassResponse trainingProgram = convertTrainingProgramToDTO(item.getTrainingProgram());
             response.setTrainingProgram(trainingProgram);
             classResponses.add(response);
@@ -306,7 +306,7 @@ public class ClassServiceImpl implements ClassService {
         for (var item: classes){
             ClassResponse response = classMapper.toResponse(item);
             response.setCreateDate(formatter.format(item.getCreateDate()));
-            response.setModifiedDate(formatter.format(item.getModifiedDate()));
+            //response.setModifiedDate(formatter.format(item.getModifiedDate()));
             TrainingProgramViewClassResponse trainingProgram = convertTrainingProgramToDTO(item.getTrainingProgram());
             response.setTrainingProgram(trainingProgram);
             classResponses.add(response);

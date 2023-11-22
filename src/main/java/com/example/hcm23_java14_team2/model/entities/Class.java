@@ -62,10 +62,10 @@ public class Class extends BaseEntity{
     private AttendeeClass attendee;
 
     @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL)
-    @JsonIgnore
+    //@JsonIgnore
     private List<Class_User> classUserList = new ArrayList();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "training_program_id")
     @JsonIgnore
     private TrainingProgram trainingProgram;
